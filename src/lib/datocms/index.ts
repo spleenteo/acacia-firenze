@@ -32,9 +32,13 @@ export async function datocmsRequest<TResult, TVariables = any>(
   })
 
   try {
-    return await client.request(document, variables)
+    const result = await client.request<TResult>(document, variables as any)
+    return result
   } catch (error) {
     console.error('DatoCMS request failed:', error)
+    console.error('Query:', document)
+    console.error('Variables:', variables)
+    console.error('Environment:', environment)
     throw error
   }
 }
