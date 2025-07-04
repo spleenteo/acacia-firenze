@@ -142,4 +142,10 @@ const seoMetaTags = homePage?._seoMetaTags || []
   </main>
   
   <Footer locale={locale} />
+  
+  <!-- Beddy Booking Widget -->
+  {homePage?.beddyId && (
+    <div id="beddy-bar" data-lang={locale} data-widgetcode={homePage.beddyId}></div>
+    <script defer src="https://cdn.beddy.io/bol/prod/beddybar.js?release13052020_v0"></script>
+  )}
 </Layout>

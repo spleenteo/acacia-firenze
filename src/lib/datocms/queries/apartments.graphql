@@ -12,6 +12,7 @@ fragment ApartmentBase on ApartmentRecord {
   acaciaReward
   published
   position
+  beddyId
   boxImage {
     url
     alt
