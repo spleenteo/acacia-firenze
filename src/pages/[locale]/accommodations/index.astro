@@ -225,126 +225,179 @@ const bedroomCounts = [...new Set(apartments.map(a => a.bedrooms).filter(Boolean
 </Layout>
 
 <script>
-  // Filter functionality
-  const districtFilter = document.getElementById('district-filter') as HTMLSelectElement
-  const bedroomsFilter = document.getElementById('bedrooms-filter') as HTMLSelectElement
-  const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement
-  const searchFilter = document.getElementById('search-filter') as HTMLInputElement
-  const apartmentItems = document.querySelectorAll('.apartment-item') as NodeListOf<HTMLElement>
-  const noResults = document.getElementById('no-results')
-  const grid = document.getElementById('apartments-grid')
-  const resetButton = document.getElementById('reset-filters') as HTMLButtonElement
-  const visibleCountElement = document.getElementById('visible-count')
-  const filterCountElement = document.getElementById('filter-count')
-  const totalApartments = apartmentItems.length
-  const locale = document.documentElement.lang || 'en'
+  // Wait for DOM to be fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get filter elements
+    const districtFilter = document.getElementById('district-filter') as HTMLSelectElement
+    const bedroomsFilter = document.getElementById('bedrooms-filter') as HTMLSelectElement
+    const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement
+    const searchFilter = document.getElementById('search-filter') as HTMLInputElement
+    const apartmentItems = document.querySelectorAll('.apartment-item') as NodeListOf<HTMLElement>
+    const noResults = document.getElementById('no-results')
+    const grid = document.getElementById('apartments-grid')
+    const resetButton = document.getElementById('reset-filters') as HTMLButtonElement
+    const visibleCountElement = document.getElementById('visible-count')
+    const filterCountElement = document.getElementById('filter-count')
+    const totalApartments = apartmentItems.length
+    const locale = document.documentElement.lang || 'en'
 
-  // Fuzzy search function
-  function fuzzyMatch(text: string, search: string): boolean {
-    if (!text || !search) return false
-    
-    text = text.toLowerCase()
-    search = search.toLowerCase()
-    
-    // Direct substring match
-    if (text.includes(search)) return true
-    
-    // Fuzzy match: all search characters must appear in order
-    let searchIndex = 0
-    for (let i = 0; i < text.length && searchIndex < search.length; i++) {
-      if (text[i] === search[searchIndex]) {
-        searchIndex++
+    // Fuzzy search function
+    function fuzzyMatch(text: string, search: string): boolean {
+      if (!text || !search) return false
+      
+      text = text.toLowerCase()
+      search = search.toLowerCase()
+      
+      // Direct substring match
+      if (text.includes(search)) return true
+      
+      // Fuzzy match: all search characters must appear in order
+      let searchIndex = 0
+      for (let i = 0; i < text.length && searchIndex < search.length; i++) {
+        if (text[i] === search[searchIndex]) {
+          searchIndex++
+        }
+      }
+      return searchIndex === search.length
+    }
+
+    // Update URL with current filter state
+    function updateURL() {
+      const params = new URLSearchParams()
+      
+      if (districtFilter?.value) {
+        params.set('district', districtFilter.value)
+      }
+      if (bedroomsFilter?.value) {
+        params.set('bedrooms', bedroomsFilter.value)
+      }
+      if (categoryFilter?.value) {
+        params.set('category', categoryFilter.value)
+      }
+      if (searchFilter?.value && searchFilter.value.length >= 3) {
+        params.set('search', searchFilter.value)
+      }
+      
+      // Update URL without page reload
+      const newURL = params.toString() 
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname
+      
+      window.history.replaceState({}, '', newURL)
+    }
+
+    // Load filters from URL parameters
+    function loadFiltersFromURL() {
+      const params = new URLSearchParams(window.location.search)
+      
+      const district = params.get('district')
+      const bedrooms = params.get('bedrooms')
+      const category = params.get('category')
+      const search = params.get('search')
+      
+      if (district && districtFilter) {
+        districtFilter.value = district
+      }
+      if (bedrooms && bedroomsFilter) {
+        bedroomsFilter.value = bedrooms
+      }
+      if (category && categoryFilter) {
+        categoryFilter.value = category
+      }
+      if (search && searchFilter) {
+        searchFilter.value = search
       }
     }
-    return searchIndex === search.length
-  }
 
-  function updateFilterCount() {
-    let activeFilters = 0
-    if (districtFilter?.value) activeFilters++
-    if (bedroomsFilter?.value) activeFilters++
-    if (categoryFilter?.value) activeFilters++
-    if (searchFilter?.value && searchFilter.value.length >= 3) activeFilters++
-    
-    if (activeFilters > 0) {
-      resetButton?.classList.remove('hidden')
-      if (filterCountElement) {
-        const filterText = locale === 'it' 
-          ? `(${activeFilters} ${activeFilters === 1 ? 'filtro attivo' : 'filtri attivi'})`
-          : `(${activeFilters} active ${activeFilters === 1 ? 'filter' : 'filters'})`
-        filterCountElement.textContent = filterText
-      }
-    } else {
-      resetButton?.classList.add('hidden')
-      if (filterCountElement) {
-        filterCountElement.textContent = ''
-      }
-    }
-  }
-
-  function filterApartments() {
-    const selectedDistrict = districtFilter?.value || ''
-    const selectedBedrooms = bedroomsFilter?.value || ''
-    const selectedCategory = categoryFilter?.value || ''
-    const searchText = searchFilter?.value || ''
-    
-    let visibleCount = 0
-    
-    apartmentItems.forEach(item => {
-      const itemDistrict = item.dataset.district || ''
-      const itemBedrooms = item.dataset.bedrooms || ''
-      const itemCategory = item.dataset.category || ''
-      const itemName = item.dataset.name || ''
+    function updateFilterCount() {
+      let activeFilters = 0
+      if (districtFilter?.value) activeFilters++
+      if (bedroomsFilter?.value) activeFilters++
+      if (categoryFilter?.value) activeFilters++
+      if (searchFilter?.value && searchFilter.value.length >= 3) activeFilters++
       
-      const matchesDistrict = !selectedDistrict || itemDistrict === selectedDistrict
-      const matchesBedrooms = !selectedBedrooms || itemBedrooms === selectedBedrooms
-      const matchesCategory = !selectedCategory || itemCategory === selectedCategory
-      
-      // Apply search filter only if text is 3+ characters
-      const matchesSearch = searchText.length < 3 || fuzzyMatch(itemName, searchText)
-      
-      if (matchesDistrict && matchesBedrooms && matchesCategory && matchesSearch) {
-        item.style.display = ''
-        visibleCount++
+      if (activeFilters > 0) {
+        resetButton?.classList.remove('hidden')
+        if (filterCountElement) {
+          const filterText = locale === 'it' 
+            ? `(${activeFilters} ${activeFilters === 1 ? 'filtro attivo' : 'filtri attivi'})`
+            : `(${activeFilters} active ${activeFilters === 1 ? 'filter' : 'filters'})`
+          filterCountElement.textContent = filterText
+        }
       } else {
-        item.style.display = 'none'
-      }
-    })
-    
-    // Update visible count
-    if (visibleCountElement) {
-      visibleCountElement.textContent = visibleCount.toString()
-    }
-    
-    // Show/hide no results message
-    if (noResults && grid) {
-      if (visibleCount === 0) {
-        noResults.classList.remove('hidden')
-        grid.classList.add('hidden')
-      } else {
-        noResults.classList.add('hidden')
-        grid.classList.remove('hidden')
+        resetButton?.classList.add('hidden')
+        if (filterCountElement) {
+          filterCountElement.textContent = ''
+        }
       }
     }
-    
-    updateFilterCount()
-  }
 
-  function resetFilters() {
-    if (districtFilter) districtFilter.value = ''
-    if (bedroomsFilter) bedroomsFilter.value = ''
-    if (categoryFilter) categoryFilter.value = ''
-    if (searchFilter) searchFilter.value = ''
+    function filterApartments() {
+      const selectedDistrict = districtFilter?.value || ''
+      const selectedBedrooms = bedroomsFilter?.value || ''
+      const selectedCategory = categoryFilter?.value || ''
+      const searchText = searchFilter?.value || ''
+      
+      let visibleCount = 0
+      
+      apartmentItems.forEach(item => {
+        const itemDistrict = item.dataset.district || ''
+        const itemBedrooms = item.dataset.bedrooms || ''
+        const itemCategory = item.dataset.category || ''
+        const itemName = item.dataset.name || ''
+        
+        const matchesDistrict = !selectedDistrict || itemDistrict === selectedDistrict
+        const matchesBedrooms = !selectedBedrooms || itemBedrooms === selectedBedrooms
+        const matchesCategory = !selectedCategory || itemCategory === selectedCategory
+        
+        // Apply search filter only if text is 3+ characters
+        const matchesSearch = searchText.length < 3 || fuzzyMatch(itemName, searchText)
+        
+        if (matchesDistrict && matchesBedrooms && matchesCategory && matchesSearch) {
+          item.style.display = ''
+          visibleCount++
+        } else {
+          item.style.display = 'none'
+        }
+      })
+      
+      // Update visible count
+      if (visibleCountElement) {
+        visibleCountElement.textContent = visibleCount.toString()
+      }
+      
+      // Show/hide no results message
+      if (noResults && grid) {
+        if (visibleCount === 0) {
+          noResults.classList.remove('hidden')
+          grid.classList.add('hidden')
+        } else {
+          noResults.classList.add('hidden')
+          grid.classList.remove('hidden')
+        }
+      }
+      
+      updateFilterCount()
+      updateURL()
+    }
+
+    function resetFilters() {
+      if (districtFilter) districtFilter.value = ''
+      if (bedroomsFilter) bedroomsFilter.value = ''
+      if (categoryFilter) categoryFilter.value = ''
+      if (searchFilter) searchFilter.value = ''
+      filterApartments()
+    }
+
+    // Add event listeners
+    districtFilter?.addEventListener('change', filterApartments)
+    bedroomsFilter?.addEventListener('change', filterApartments)
+    categoryFilter?.addEventListener('change', filterApartments)
+    searchFilter?.addEventListener('input', filterApartments)
+    resetButton?.addEventListener('click', resetFilters)
+
+    // Initialize with URL parameters
+    loadFiltersFromURL()
     filterApartments()
-  }
-
-  // Add event listeners
-  districtFilter?.addEventListener('change', filterApartments)
-  bedroomsFilter?.addEventListener('change', filterApartments)
-  categoryFilter?.addEventListener('change', filterApartments)
-  searchFilter?.addEventListener('input', filterApartments)
-  resetButton?.addEventListener('click', resetFilters)
-
-  // Initialize
-  filterApartments()
+  })
 </script>
