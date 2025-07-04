@@ -1,0 +1,6 @@
+name = "acacia-firenze"
+pages_build_output_dir = "dist"
+
+# This is a Pages project, not a Worker
+# Compatibility settings should be set in the Cloudflare dashboard
+# or in the astro.config.mjs file

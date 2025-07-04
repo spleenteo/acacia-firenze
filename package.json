@@ -8,7 +8,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "codegen": "graphql-codegen --config .graphqlrc.ts",
-    "codegen:watch": "graphql-codegen --config .graphqlrc.ts --watch"
+    "codegen:watch": "graphql-codegen --config .graphqlrc.ts --watch",
+    "build:cloudflare": "astro build",
+    "preview:cloudflare": "wrangler pages dev dist",
+    "deploy:test": "npm run build:cloudflare && wrangler pages deploy dist --project-name=acacia-firenze",
+    "deploy": "npm run build:cloudflare && wrangler pages deploy dist --project-name=acacia-firenze --branch=production"
   },
   "dependencies": {
     "@graphql-codegen/cli": "^5.0.7",
@@ -27,7 +31,9 @@
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
+    "@astrojs/cloudflare": "^12.6.0",
     "@graphql-codegen/typed-document-node": "^5.1.2",
-    "@types/js-cookie": "^3.0.6"
+    "@types/js-cookie": "^3.0.6",
+    "wrangler": "^4.23.0"
   }
 }
