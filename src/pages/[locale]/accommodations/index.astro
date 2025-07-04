@@ -1,0 +1,350 @@
+---
+import Layout from '@layouts/Layout.astro'
+import Navigation from '@components/Navigation.astro'
+import Footer from '@components/Footer.astro'
+import ApartmentCard from '@components/ApartmentCard.astro'
+import { Icon } from 'astro-icon/components'
+import { getSupportedLocales } from '@lib/i18n'
+import { getAllApartments } from '@lib/datocms/api'
+
+export const prerender = false
+
+const { locale } = Astro.params as { locale: string }
+
+if (!locale) {
+  throw new Error('Locale parameter is required')
+}
+
+// Fetch all published apartments
+const apartments = await getAllApartments(locale)
+
+// Group apartments by category if they have one
+const apartmentsByCategory = apartments.reduce((acc, apartment) => {
+  const category = apartment.category?.name || 'Other'
+  if (!acc[category]) {
+    acc[category] = []
+  }
+  acc[category].push(apartment)
+  return acc
+}, {} as Record<string, typeof apartments>)
+
+// Group apartments by district
+const apartmentsByDistrict = apartments.reduce((acc, apartment) => {
+  const district = apartment.district?.name || 'Other'
+  if (!acc[district]) {
+    acc[district] = []
+  }
+  acc[district].push(apartment)
+  return acc
+}, {} as Record<string, typeof apartments>)
+
+// Get unique values for filters
+const categories = Object.keys(apartmentsByCategory).filter(c => c !== 'Other')
+const districts = Object.keys(apartmentsByDistrict).filter(d => d !== 'Other')
+const bedroomCounts = [...new Set(apartments.map(a => a.bedrooms).filter(Boolean))].sort()
+---
+
+<Layout 
+  title={locale === 'it' ? 'I Nostri Appartamenti a Firenze' : 'Our Apartments in Florence'}
+  description={locale === 'it' ? 'Scopri la nostra collezione di appartamenti di lusso nel centro di Firenze' : 'Discover our collection of luxury apartments in the heart of Florence'}
+  locale={locale}
+>
+  <Navigation locale={locale} />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-b from-gray-50 to-white py-20">
+      <div class="container-acacia text-center">
+        <h1 class="heading-display text-acacia-primary mb-6">
+          {locale === 'it' ? 'I Nostri Appartamenti' : 'Our Apartments'}
+        </h1>
+        <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+          {locale === 'it' 
+            ? 'Una selezione curata di appartamenti di lusso nel cuore di Firenze, dove comfort moderno e charme storico si incontrano.'
+            : 'A curated selection of luxury apartments in the heart of Florence, where modern comfort meets historic charm.'}
+        </p>
+      </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="py-8 bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="container-acacia">
+        <div class="flex flex-wrap gap-4 items-center justify-between">
+          <div class="flex flex-wrap gap-4 items-center">
+            <!-- Search Input -->
+            <div class="relative">
+              <input 
+                type="text"
+                id="search-filter"
+                placeholder={locale === 'it' ? 'Cerca appartamento...' : 'Search apartment...'}
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-acacia-primary min-w-[200px]"
+              />
+              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+            
+            <!-- District Filter -->
+            {districts.length > 0 && (
+              <select 
+                id="district-filter"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-acacia-primary"
+              >
+                <option value="">{locale === 'it' ? 'Tutti i quartieri' : 'All districts'}</option>
+                {districts.map(district => (
+                  <option value={district}>{district}</option>
+                ))}
+              </select>
+            )}
+
+            <!-- Bedrooms Filter -->
+            {bedroomCounts.length > 0 && (
+              <select 
+                id="bedrooms-filter"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-acacia-primary"
+              >
+                <option value="">{locale === 'it' ? 'Camere da letto' : 'Bedrooms'}</option>
+                {bedroomCounts.map(count => (
+                  <option value={count}>{count} {locale === 'it' ? 'camere' : 'bedrooms'}</option>
+                ))}
+              </select>
+            )}
+
+            <!-- Category Filter -->
+            {categories.length > 0 && (
+              <select 
+                id="category-filter"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-acacia-primary"
+              >
+                <option value="">{locale === 'it' ? 'Tutte le categorie' : 'All categories'}</option>
+                {categories.map(category => (
+                  <option value={category}>{category}</option>
+                ))}
+              </select>
+            )}
+            
+            <!-- Reset Filters Button -->
+            <button 
+              id="reset-filters"
+              class="px-4 py-2 text-acacia-secondary hover:text-acacia-primary font-semibold transition-colors hidden"
+            >
+              {locale === 'it' ? 'Azzera filtri' : 'Reset filters'}
+            </button>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <span id="filter-count" class="text-sm text-gray-500"></span>
+            <div class="text-gray-600">
+              <span id="visible-count">{apartments.length}</span> {locale === 'it' ? 'appartamenti' : 'apartments'}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Apartments Grid -->
+    <section class="py-20 bg-white">
+      <div class="container-acacia">
+        <div id="apartments-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {apartments.map((apartment) => (
+            <div 
+              class="apartment-item"
+              data-district={apartment.district?.name || ''}
+              data-bedrooms={apartment.bedrooms || ''}
+              data-category={apartment.category?.name || ''}
+              data-name={apartment.name || ''}
+            >
+              <ApartmentCard apartment={apartment} locale={locale} />
+            </div>
+          ))}
+        </div>
+        
+        <!-- No results message -->
+        <div id="no-results" class="hidden text-center py-12">
+          <p class="text-xl text-gray-600">
+            {locale === 'it' 
+              ? 'Nessun appartamento trovato con i filtri selezionati.'
+              : 'No apartments found with the selected filters.'}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container-acacia">
+        <h2 class="heading-2 text-center text-acacia-primary mb-12">
+          {locale === 'it' ? 'Perché Scegliere Acacia' : 'Why Choose Acacia'}
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-acacia-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon name="iconoir:historic-shield" class="w-8 h-8 text-white" />
+            </div>
+            <h3 class="text-xl font-semibold text-acacia-primary mb-3">
+              {locale === 'it' ? 'Posizione Centrale' : 'Central Location'}
+            </h3>
+            <p class="text-gray-600">
+              {locale === 'it' 
+                ? 'Tutti i nostri appartamenti sono situati nel centro storico di Firenze'
+                : 'All our apartments are located in the historic center of Florence'}
+            </p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-acacia-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon name="iconoir:star" class="w-8 h-8 text-white" />
+            </div>
+            <h3 class="text-xl font-semibold text-acacia-primary mb-3">
+              {locale === 'it' ? 'Comfort di Lusso' : 'Luxury Comfort'}
+            </h3>
+            <p class="text-gray-600">
+              {locale === 'it' 
+                ? 'Arredi di alta qualità e tutti i comfort moderni'
+                : 'High-quality furnishings and all modern amenities'}
+            </p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-acacia-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon name="iconoir:help-circle" class="w-8 h-8 text-white" />
+            </div>
+            <h3 class="text-xl font-semibold text-acacia-primary mb-3">
+              {locale === 'it' ? 'Assistenza 7/7' : '7/7 Assistance'}
+            </h3>
+            <p class="text-gray-600">
+              {locale === 'it' 
+                ? 'Il nostro team è sempre disponibile per assistervi'
+                : 'Our team is always available to assist you'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer locale={locale} />
+</Layout>
+
+<script>
+  // Filter functionality
+  const districtFilter = document.getElementById('district-filter') as HTMLSelectElement
+  const bedroomsFilter = document.getElementById('bedrooms-filter') as HTMLSelectElement
+  const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement
+  const searchFilter = document.getElementById('search-filter') as HTMLInputElement
+  const apartmentItems = document.querySelectorAll('.apartment-item') as NodeListOf<HTMLElement>
+  const noResults = document.getElementById('no-results')
+  const grid = document.getElementById('apartments-grid')
+  const resetButton = document.getElementById('reset-filters') as HTMLButtonElement
+  const visibleCountElement = document.getElementById('visible-count')
+  const filterCountElement = document.getElementById('filter-count')
+  const totalApartments = apartmentItems.length
+  const locale = document.documentElement.lang || 'en'
+
+  // Fuzzy search function
+  function fuzzyMatch(text: string, search: string): boolean {
+    if (!text || !search) return false
+    
+    text = text.toLowerCase()
+    search = search.toLowerCase()
+    
+    // Direct substring match
+    if (text.includes(search)) return true
+    
+    // Fuzzy match: all search characters must appear in order
+    let searchIndex = 0
+    for (let i = 0; i < text.length && searchIndex < search.length; i++) {
+      if (text[i] === search[searchIndex]) {
+        searchIndex++
+      }
+    }
+    return searchIndex === search.length
+  }
+
+  function updateFilterCount() {
+    let activeFilters = 0
+    if (districtFilter?.value) activeFilters++
+    if (bedroomsFilter?.value) activeFilters++
+    if (categoryFilter?.value) activeFilters++
+    if (searchFilter?.value && searchFilter.value.length >= 3) activeFilters++
+    
+    if (activeFilters > 0) {
+      resetButton?.classList.remove('hidden')
+      if (filterCountElement) {
+        const filterText = locale === 'it' 
+          ? `(${activeFilters} ${activeFilters === 1 ? 'filtro attivo' : 'filtri attivi'})`
+          : `(${activeFilters} active ${activeFilters === 1 ? 'filter' : 'filters'})`
+        filterCountElement.textContent = filterText
+      }
+    } else {
+      resetButton?.classList.add('hidden')
+      if (filterCountElement) {
+        filterCountElement.textContent = ''
+      }
+    }
+  }
+
+  function filterApartments() {
+    const selectedDistrict = districtFilter?.value || ''
+    const selectedBedrooms = bedroomsFilter?.value || ''
+    const selectedCategory = categoryFilter?.value || ''
+    const searchText = searchFilter?.value || ''
+    
+    let visibleCount = 0
+    
+    apartmentItems.forEach(item => {
+      const itemDistrict = item.dataset.district || ''
+      const itemBedrooms = item.dataset.bedrooms || ''
+      const itemCategory = item.dataset.category || ''
+      const itemName = item.dataset.name || ''
+      
+      const matchesDistrict = !selectedDistrict || itemDistrict === selectedDistrict
+      const matchesBedrooms = !selectedBedrooms || itemBedrooms === selectedBedrooms
+      const matchesCategory = !selectedCategory || itemCategory === selectedCategory
+      
+      // Apply search filter only if text is 3+ characters
+      const matchesSearch = searchText.length < 3 || fuzzyMatch(itemName, searchText)
+      
+      if (matchesDistrict && matchesBedrooms && matchesCategory && matchesSearch) {
+        item.style.display = ''
+        visibleCount++
+      } else {
+        item.style.display = 'none'
+      }
+    })
+    
+    // Update visible count
+    if (visibleCountElement) {
+      visibleCountElement.textContent = visibleCount.toString()
+    }
+    
+    // Show/hide no results message
+    if (noResults && grid) {
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden')
+        grid.classList.add('hidden')
+      } else {
+        noResults.classList.add('hidden')
+        grid.classList.remove('hidden')
+      }
+    }
+    
+    updateFilterCount()
+  }
+
+  function resetFilters() {
+    if (districtFilter) districtFilter.value = ''
+    if (bedroomsFilter) bedroomsFilter.value = ''
+    if (categoryFilter) categoryFilter.value = ''
+    if (searchFilter) searchFilter.value = ''
+    filterApartments()
+  }
+
+  // Add event listeners
+  districtFilter?.addEventListener('change', filterApartments)
+  bedroomsFilter?.addEventListener('change', filterApartments)
+  categoryFilter?.addEventListener('change', filterApartments)
+  searchFilter?.addEventListener('input', filterApartments)
+  resetButton?.addEventListener('click', resetFilters)
+
+  // Initialize
+  filterApartments()
+</script>

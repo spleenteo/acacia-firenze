@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "accommodations": "Accommodations",
+    "districts": "Districts",
+    "experiences": "Experiences",
+    "moods": "Moods",
+    "events": "Events",
+    "blog": "Blog",
+    "guestbook": "Guestbook",
+    "faq": "FAQ",
+    "offers": "Offers"
+  },
+  "common": {
+    "readMore": "Read more",
+    "bookNow": "Book now",
+    "contact": "Contact",
+    "newsletter": "Newsletter",
+    "subscribe": "Subscribe",
+    "language": "Language",
+    "close": "Close",
+    "menu": "Menu"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms and Conditions",
+    "followUs": "Follow us"
+  }
+}

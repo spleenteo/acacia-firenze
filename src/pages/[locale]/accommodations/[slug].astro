@@ -1,0 +1,263 @@
+---
+import Layout from '@layouts/Layout.astro'
+import Navigation from '@components/Navigation.astro'
+import Footer from '@components/Footer.astro'
+import { Icon } from 'astro-icon/components'
+import { getSupportedLocales } from '@lib/i18n'
+import { getApartmentBySlug } from '@lib/datocms/api'
+
+export const prerender = false
+
+const { locale, slug } = Astro.params as { locale: string; slug: string }
+
+if (!locale || !slug) {
+  throw new Error('Locale and slug parameters are required')
+}
+
+const apartment = await getApartmentBySlug(locale, slug)
+
+if (!apartment) {
+  return Astro.redirect(`/${locale}/404`)
+}
+
+const seoMetaTags = apartment._seoMetaTags || []
+---
+
+<Layout 
+  title={apartment.seo?.title || apartment.name}
+  description={apartment.seo?.description || apartment.description}
+  image={apartment.seo?.image?.url || apartment.featuredImage?.url}
+  locale={locale}
+>
+  <Navigation locale={locale} />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="relative">
+      <div class="aspect-[16/9] lg:aspect-[21/9] overflow-hidden">
+        <img 
+          src={apartment.featuredImage?.url}
+          alt={apartment.featuredImage?.alt || apartment.name}
+          class="w-full h-full object-cover"
+        />
+      </div>
+      
+      <!-- Apartment Info Overlay -->
+      <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-8 lg:p-12">
+        <div class="container-acacia">
+          <div class="text-white">
+            <h1 class="heading-display mb-4">{apartment.name}</h1>
+            <div class="flex flex-wrap gap-6 text-sm">
+              {apartment.district && (
+                <span>{apartment.district.name}</span>
+              )}
+              {apartment.sleeps && (
+                <span>{apartment.sleeps} sleeps</span>
+              )}
+              {apartment.bedrooms && (
+                <span>{apartment.bedrooms} bedrooms</span>
+              )}
+              {apartment.size && (
+                <span>{apartment.size} m²</span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Info Bar -->
+    <section class="bg-acacia-primary text-white py-4">
+      <div class="container-acacia">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div class="flex flex-wrap gap-8">
+            {apartment.bedrooms && (
+              <div class="flex items-center gap-2">
+                <Icon name="iconoir:bed-ready" class="w-6 h-6" />
+                <span>{apartment.bedrooms} bedrooms</span>
+              </div>
+            )}
+            {apartment.bathrooms && (
+              <div class="flex items-center gap-2">
+                <Icon name="iconoir:bathroom" class="w-6 h-6" />
+                <span>{apartment.bathrooms} bathrooms</span>
+              </div>
+            )}
+            {apartment.sleeps && (
+              <div class="flex items-center gap-2">
+                <Icon name="iconoir:group" class="w-6 h-6" />
+                <span>{apartment.sleeps} guests</span>
+              </div>
+            )}
+          </div>
+          {apartment.price && (
+            <div class="text-xl font-semibold">{apartment.price}</div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-12 lg:py-20">
+      <div class="container-acacia">
+        <div class="grid lg:grid-cols-3 gap-12">
+          <!-- Left Column - Main Content -->
+          <div class="lg:col-span-2">
+            <!-- Description -->
+            <div class="mb-12">
+              <h2 class="heading-2 text-acacia-primary mb-6">About this space</h2>
+              <div class="prose prose-lg max-w-none text-gray-700">
+                {apartment.description && (
+                  <p class="text-lg leading-relaxed">{apartment.description}</p>
+                )}
+                {apartment.claim && (
+                  <p class="text-xl font-semibold text-acacia-secondary mt-6">{apartment.claim}</p>
+                )}
+              </div>
+            </div>
+
+            <!-- Gallery -->
+            {apartment.gallery && apartment.gallery.length > 0 && (
+              <div class="mb-12">
+                <h2 class="heading-2 text-acacia-primary mb-6">Gallery</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {apartment.gallery.map((image) => (
+                    <div class="aspect-[4/3] overflow-hidden rounded-lg">
+                      <img 
+                        src={image.image?.url}
+                        alt={image.image?.alt || apartment.name}
+                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- Amenities -->
+            {apartment.ups && apartment.ups.length > 0 && (
+              <div class="mb-12">
+                <h2 class="heading-2 text-acacia-primary mb-6">Amenities</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {apartment.ups.map((amenity) => (
+                    <div class="flex items-start gap-3">
+                      <Icon name="iconoir:check-circle" class="w-5 h-5 text-acacia-secondary mt-0.5 flex-shrink-0" />
+                      {amenity.url ? (
+                        <a 
+                          href={amenity.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-acacia-secondary hover:text-acacia-primary transition-colors underline"
+                        >
+                          {amenity.name}
+                        </a>
+                      ) : (
+                        <span class="text-gray-700">{amenity.name}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- Cuddles -->
+            {apartment.cuddles && apartment.cuddles.length > 0 && (
+              <div class="mb-12">
+                <h2 class="heading-2 text-acacia-primary mb-6">What we love about this space</h2>
+                <div class="grid gap-4">
+                  {apartment.cuddles.map((cuddle) => (
+                    <div class="flex items-start gap-3 bg-gray-50 p-6 rounded-lg">
+                      <Icon name="iconoir:heart" class="w-5 h-5 text-acacia-secondary mt-1 flex-shrink-0" />
+                      <div>
+                        {cuddle.url ? (
+                          <a 
+                            href={cuddle.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-lg font-medium text-acacia-secondary hover:text-acacia-primary transition-colors"
+                          >
+                            {cuddle.name}
+                          </a>
+                        ) : (
+                          <span class="text-lg font-medium text-gray-700">{cuddle.name}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- Home Truth -->
+            {apartment.homeTruth && apartment.homeTruth.length > 0 && (
+              <div class="mb-12">
+                <h2 class="heading-2 text-acacia-primary mb-6">Good to know</h2>
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-6">
+                  <div class="flex items-start gap-3">
+                    <Icon name="iconoir:info-circle" class="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div class="space-y-3">
+                      {apartment.homeTruth.map((truth) => (
+                        <p class="text-gray-700">{truth.body}</p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <!-- Right Column - Booking Info -->
+          <div class="lg:col-span-1">
+            <div class="sticky top-8">
+              <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-lg">
+                <h3 class="text-2xl font-semibold text-acacia-primary mb-6">Book your stay</h3>
+                
+                {apartment.price && (
+                  <div class="text-3xl font-bold text-acacia-secondary mb-6">
+                    {apartment.price}
+                  </div>
+                )}
+
+                <div class="space-y-4 mb-6">
+                  <div class="text-gray-700">
+                    <span class="font-semibold">Check-in:</span> 4:00 PM - 8:00 PM
+                  </div>
+                  <div class="text-gray-700">
+                    <span class="font-semibold">Check-out:</span> 10:00 AM
+                  </div>
+                  {apartment.cin && (
+                    <div class="text-gray-700">
+                      <span class="font-semibold">CIN:</span> {apartment.cin}
+                    </div>
+                  )}
+                </div>
+
+                <a 
+                  href={`mailto:info@acaciafirenze.com?subject=Inquiry about ${apartment.name}`}
+                  class="block w-full bg-acacia-primary text-white text-center py-4 rounded-lg font-semibold hover:bg-acacia-primary/90 transition-colors"
+                >
+                  Contact Us
+                </a>
+              </div>
+
+              <!-- Additional Info -->
+              <div class="mt-8 bg-gray-50 rounded-lg p-6">
+                <h4 class="font-semibold text-acacia-primary mb-4">Services included</h4>
+                <ul class="space-y-2 text-sm text-gray-700">
+                  <li>• Free WiFi throughout the property</li>
+                  <li>• 7/7 assistance available</li>
+                  <li>• City map provided</li>
+                  {apartment.acaciaReward && (
+                    <li>• Acacia Reward member benefits</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer locale={locale} />
+</Layout>

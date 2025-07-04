@@ -1,0 +1,147 @@
+---
+import Layout from '@layouts/Layout.astro'
+import Navigation from '@components/Navigation.astro'
+import Footer from '@components/Footer.astro'
+import ApartmentCard from '@components/ApartmentCard.astro'
+import DistrictCard from '@components/DistrictCard.astro'
+import { getSupportedLocales } from '@lib/i18n'
+import { getAllMoods, getMoodBySlug } from '@lib/datocms/api'
+import type { GetStaticPaths } from 'astro'
+
+export const prerender = false
+
+const { locale, slug } = Astro.params as { locale: string; slug: string }
+
+if (!locale || !slug) {
+  throw new Error('Locale and slug parameters are required')
+}
+
+const mood = await getMoodBySlug(locale, slug)
+
+if (!mood) {
+  return Astro.redirect(`/${locale}/404`)
+}
+
+// Separate apartments and districts from boxes
+const apartments = mood.boxes?.filter((box: any) => box.__typename === 'ApartmentRecord') || []
+const districts = mood.boxes?.filter((box: any) => box.__typename === 'DistrictsRecord') || []
+---
+
+<Layout 
+  title={mood.seo?.title || mood.name}
+  description={mood.seo?.description || mood.description}
+  image={mood.seo?.image?.url || mood.image?.url}
+  locale={locale}
+>
+  <Navigation locale={locale} />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[60vh] flex items-center">
+      {mood.image && (
+        <div class="absolute inset-0 z-0">
+          <img 
+            src={mood.image.url}
+            alt={mood.image.alt || mood.name}
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50"></div>
+        </div>
+      )}
+      
+      <div class="container-acacia relative z-10 py-20">
+        <div class="max-w-4xl text-white">
+          <nav class="text-sm mb-6 opacity-90">
+            <a href={`/${locale}`} class="hover:text-acacia-secondary transition-colors">{locale === 'it' ? 'Home' : 'Home'}</a>
+            <span class="mx-2">/</span>
+            <a href={`/${locale}`} class="hover:text-acacia-secondary transition-colors">{locale === 'it' ? 'Mood' : 'Moods'}</a>
+            <span class="mx-2">/</span>
+            <span>{mood.name}</span>
+          </nav>
+          
+          <h1 class="heading-display mb-6">{mood.name}</h1>
+          {mood.claim && (
+            <p class="text-2xl leading-relaxed opacity-90">{mood.claim}</p>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- Description Section -->
+    {mood.description && (
+      <section class="py-20 bg-white">
+        <div class="container-acacia">
+          <div class="max-w-4xl mx-auto">
+            <div class="prose prose-lg max-w-none">
+              <p class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">{mood.description}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Mixed Content Grid -->
+    {mood.boxes && mood.boxes.length > 0 && (
+      <section class="py-20 bg-gray-50">
+        <div class="container-acacia">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {mood.boxes.map((box: any, index: number) => {
+              if (box.__typename === 'ApartmentRecord') {
+                return <ApartmentCard key={box.id} apartment={box} locale={locale} />
+              } else if (box.__typename === 'DistrictsRecord') {
+                return <DistrictCard key={box.id} district={box} locale={locale} />
+              }
+              return null
+            })}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-acacia-primary text-white">
+      <div class="container-acacia text-center">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="heading-2 mb-6">
+            {locale === 'it' 
+              ? 'Scopri la Tua Firenze Perfetta' 
+              : 'Discover Your Perfect Florence'}
+          </h2>
+          <p class="text-xl mb-8 leading-relaxed">
+            {locale === 'it'
+              ? 'Lasciati ispirare dai nostri mood e trova l\'appartamento ideale per il tuo soggiorno fiorentino.'
+              : 'Let our moods inspire you and find the perfect apartment for your Florentine stay.'}
+          </p>
+          <a 
+            href={`/${locale}/accommodations`}
+            class="inline-block bg-white text-acacia-primary px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          >
+            {locale === 'it' ? 'Vedi Tutti gli Appartamenti' : 'View All Apartments'}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Moods -->
+    <section class="py-20 bg-gray-50">
+      <div class="container-acacia">
+        <h2 class="heading-2 text-center text-acacia-primary mb-12">
+          {locale === 'it' ? 'Altri Mood da Esplorare' : 'Other Moods to Explore'}
+        </h2>
+        <div class="text-center">
+          <a 
+            href={`/${locale}`}
+            class="inline-flex items-center text-acacia-secondary font-semibold hover:gap-2 transition-all"
+          >
+            {locale === 'it' ? 'Torna alla Home' : 'Back to Home'}
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer locale={locale} />
+</Layout>

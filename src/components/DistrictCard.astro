@@ -1,0 +1,42 @@
+---
+import type { DistrictsRecord } from '@lib/datocms/types'
+
+export interface Props {
+  district: DistrictsRecord
+  locale: string
+}
+
+const { district, locale } = Astro.props
+const firstImage = district.gallery?.[0]?.image
+---
+
+<a 
+  href={`/${locale}/districts/${district.slug}`}
+  class="group cursor-pointer block bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-acacia-primary h-full"
+>
+  {firstImage && (
+    <div class="aspect-[4/3] overflow-hidden">
+      <img 
+        src={firstImage.url}
+        alt={firstImage.alt || district.name}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+    </div>
+  )}
+  <div class="p-6">
+    <h3 class="text-xl font-semibold text-acacia-primary group-hover:text-acacia-secondary transition-colors mb-2">
+      {district.name}
+    </h3>
+    {district.abstract && (
+      <p class="text-gray-600 text-sm line-clamp-3">
+        {district.abstract}
+      </p>
+    )}
+    <span class="inline-flex items-center mt-4 text-acacia-secondary font-semibold group-hover:gap-2 transition-all">
+      {locale === 'it' ? 'Scopri il quartiere' : 'Discover district'}
+      <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </span>
+  </div>
+</a>

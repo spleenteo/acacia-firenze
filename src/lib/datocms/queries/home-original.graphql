@@ -1,0 +1,87 @@
+query GetHomePageOriginal($locale: SiteLocale!) {
+  homePageOriginal(locale: $locale) {
+    id
+    title
+    claim
+    stayText
+    doText
+    moodsTitle
+    beddyId
+    promoTitle
+    ctaText
+    ctaLabel
+    ctaImage {
+      url
+      alt
+      title
+      responsiveImage {
+        src
+        width
+        height
+        alt
+        title
+        base64
+        sizes
+      }
+    }
+    ctaLink {
+      __typename
+    }
+    moods {
+      id
+      name
+      slug
+      claim
+      image {
+        url
+        alt
+        title
+        responsiveImage {
+          src
+          width
+          height
+          alt
+          title
+          base64
+          sizes
+        }
+      }
+    }
+    promo {
+      id
+      description
+      foto {
+        url
+        alt
+        title
+        responsiveImage {
+          src
+          width
+          height
+          alt
+          title
+          base64
+          sizes
+        }
+      }
+      apartment {
+        id
+        name
+        slug
+      }
+    }
+    seo {
+      title
+      description
+      image {
+        url
+      }
+      twitterCard
+    }
+    _seoMetaTags {
+      attributes
+      content
+      tag
+    }
+  }
+}

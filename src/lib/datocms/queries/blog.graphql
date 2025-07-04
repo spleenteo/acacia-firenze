@@ -1,0 +1,50 @@
+fragment PostBase on PostRecord {
+  id
+  title
+  slug
+  abstract
+  publishedAt
+  published
+  featuredImage {
+    url
+    alt
+    title
+  }
+  category {
+    id
+    name
+    slug
+  }
+}
+
+query GetAllPosts($locale: SiteLocale!, $first: IntType = 100) {
+  allPosts(
+    locale: $locale
+    first: $first
+    orderBy: publishedAt_DESC
+    filter: { published: { eq: true } }
+  ) {
+    ...PostBase
+  }
+}
+
+query GetPostBySlug($locale: SiteLocale!, $slug: String!) {
+  post(locale: $locale, filter: { slug: { eq: $slug } }) {
+    ...PostBase
+    seo {
+      title
+      description
+      image {
+        url
+      }
+    }
+  }
+}
+
+query GetAllBlogCategories($locale: SiteLocale!) {
+  allBlogCategories(locale: $locale) {
+    id
+    name
+    slug
+  }
+}

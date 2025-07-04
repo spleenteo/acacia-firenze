@@ -1,0 +1,44 @@
+fragment ServiceBase on ServiceRecord {
+  id
+  name
+  slug
+  description
+  abstract
+  featuredImage {
+    url
+    alt
+    title
+  }
+  category {
+    id
+    name
+    slug
+  }
+}
+
+query GetAllServices($locale: SiteLocale!) {
+  allServices(locale: $locale, orderBy: position_ASC) {
+    ...ServiceBase
+  }
+}
+
+query GetServiceBySlug($locale: SiteLocale!, $slug: String!) {
+  service(locale: $locale, filter: { slug: { eq: $slug } }) {
+    ...ServiceBase
+    seo {
+      title
+      description
+      image {
+        url
+      }
+    }
+  }
+}
+
+query GetAllServiceCategories($locale: SiteLocale!) {
+  allServiceCategories(locale: $locale, orderBy: position_ASC) {
+    id
+    name
+    slug
+  }
+}

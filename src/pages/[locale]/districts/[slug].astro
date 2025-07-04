@@ -1,0 +1,231 @@
+---
+import Layout from '@layouts/Layout.astro'
+import Navigation from '@components/Navigation.astro'
+import Footer from '@components/Footer.astro'
+import ApartmentCard from '@components/ApartmentCard.astro'
+import { Icon } from 'astro-icon/components'
+import { getSupportedLocales } from '@lib/i18n'
+import { getAllDistricts, getDistrictBySlug, getAllApartments } from '@lib/datocms/api'
+import type { GetStaticPaths } from 'astro'
+
+export const prerender = true
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const locales = await getSupportedLocales()
+  const paths = []
+  
+  for (const locale of locales) {
+    const districts = await getAllDistricts(locale)
+    
+    for (const district of districts) {
+      paths.push({
+        params: { locale, slug: district.slug },
+        props: { locale }
+      })
+    }
+  }
+  
+  return paths
+}
+
+const { locale, slug } = Astro.params as { locale: string; slug: string }
+
+if (!locale || !slug) {
+  throw new Error('Locale and slug parameters are required')
+}
+
+const district = await getDistrictBySlug(locale, slug)
+
+if (!district) {
+  throw new Error(`District not found: ${slug}`)
+}
+
+// Get all apartments and filter by district
+const allApartments = await getAllApartments(locale)
+const districtApartments = allApartments.filter(apt => apt.district?.slug === slug)
+
+// Get other districts for navigation
+const allDistricts = await getAllDistricts(locale)
+const otherDistricts = allDistricts.filter(d => d.slug !== slug).slice(0, 5)
+---
+
+<Layout 
+  title={district.seo?.title || district.name}
+  description={district.seo?.description || district.abstract || district.description}
+  image={district.seo?.image?.url}
+  locale={locale}
+>
+  <Navigation locale={locale} />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[50vh] bg-gradient-to-b from-gray-100 to-white flex items-center">
+      <div class="container-acacia py-20">
+        <div class="max-w-4xl">
+          <nav class="text-sm text-gray-600 mb-6">
+            <a href={`/${locale}`} class="hover:text-acacia-primary">{locale === 'it' ? 'Home' : 'Home'}</a>
+            <span class="mx-2">/</span>
+            <a href={`/${locale}/districts`} class="hover:text-acacia-primary">{locale === 'it' ? 'Quartieri' : 'Districts'}</a>
+            <span class="mx-2">/</span>
+            <span class="text-acacia-primary">{district.name}</span>
+          </nav>
+          
+          <h1 class="heading-display text-acacia-primary mb-6">{district.name}</h1>
+          {district.abstract && (
+            <p class="text-xl text-gray-700 leading-relaxed">{district.abstract}</p>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    {district.gallery && district.gallery.length > 0 && (
+      <section class="py-12 bg-white">
+        <div class="container-acacia">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {district.gallery.map((item, index) => (
+              <div class={`aspect-[4/3] overflow-hidden rounded-lg ${index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}`}>
+                <img 
+                  src={item.image?.url}
+                  alt={item.image?.alt || district.name}
+                  class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Description Section -->
+    {district.description && (
+      <section class="py-20 bg-white">
+        <div class="container-acacia">
+          <div class="max-w-4xl mx-auto">
+            <div class="prose prose-lg max-w-none">
+              <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">{district.description}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Apartments Section -->
+    {districtApartments.length > 0 && (
+      <section class="py-20 bg-gray-50">
+        <div class="container-acacia">
+          <h2 class="heading-2 text-center text-acacia-primary mb-12">
+            {locale === 'it' ? `Appartamenti in ${district.name}` : `Apartments in ${district.name}`}
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {districtApartments.map((apartment) => (
+              <ApartmentCard apartment={apartment} locale={locale} />
+            ))}
+          </div>
+          
+          {districtApartments.length >= 6 && (
+            <div class="text-center mt-12">
+              <a 
+                href={`/${locale}/accommodations?district=${district.slug}`}
+                class="inline-block bg-acacia-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-acacia-primary/90 transition-colors"
+              >
+                {locale === 'it' ? 'Vedi tutti gli appartamenti' : 'View all apartments'}
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+
+    <!-- District Features -->
+    <section class="py-20 bg-white">
+      <div class="container-acacia">
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-acacia-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon name="iconoir:walking" class="w-10 h-10 text-acacia-primary" />
+            </div>
+            <h3 class="text-xl font-semibold text-acacia-primary mb-3">
+              {locale === 'it' ? 'Esplora a piedi' : 'Explore on foot'}
+            </h3>
+            <p class="text-gray-600">
+              {locale === 'it' 
+                ? 'Tutti i luoghi di interesse sono facilmente raggiungibili a piedi'
+                : 'All points of interest are easily reachable on foot'}
+            </p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-20 h-20 bg-acacia-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon name="iconoir:historic-shield" class="w-10 h-10 text-acacia-primary" />
+            </div>
+            <h3 class="text-xl font-semibold text-acacia-primary mb-3">
+              {locale === 'it' ? 'Storia e cultura' : 'History and culture'}
+            </h3>
+            <p class="text-gray-600">
+              {locale === 'it' 
+                ? 'Immergiti nella storia millenaria di Firenze'
+                : 'Immerse yourself in the millennial history of Florence'}
+            </p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-20 h-20 bg-acacia-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon name="iconoir:wine-bottle" class="w-10 h-10 text-acacia-primary" />
+            </div>
+            <h3 class="text-xl font-semibold text-acacia-primary mb-3">
+              {locale === 'it' ? 'Gastronomia locale' : 'Local gastronomy'}
+            </h3>
+            <p class="text-gray-600">
+              {locale === 'it' 
+                ? 'Scopri i sapori autentici della cucina toscana'
+                : 'Discover the authentic flavors of Tuscan cuisine'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Districts -->
+    {otherDistricts.length > 0 && (
+      <section class="py-20 bg-gray-50">
+        <div class="container-acacia">
+          <h2 class="heading-2 text-center text-acacia-primary mb-12">
+            {locale === 'it' ? 'Esplora altri quartieri' : 'Explore other districts'}
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {otherDistricts.map((otherDistrict) => (
+              <a 
+                href={`/${locale}/districts/${otherDistrict.slug}`}
+                class="bg-white p-6 rounded-lg hover:shadow-lg transition-shadow group"
+              >
+                <h3 class="text-xl font-semibold text-acacia-primary group-hover:text-acacia-secondary transition-colors">
+                  {otherDistrict.name}
+                </h3>
+                {otherDistrict.abstract && (
+                  <p class="text-gray-600 mt-2 line-clamp-2 text-sm">
+                    {otherDistrict.abstract}
+                  </p>
+                )}
+              </a>
+            ))}
+          </div>
+          
+          <div class="text-center mt-8">
+            <a 
+              href={`/${locale}/districts`}
+              class="inline-flex items-center text-acacia-secondary font-semibold hover:gap-2 transition-all"
+            >
+              {locale === 'it' ? 'Vedi tutti i quartieri' : 'View all districts'}
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+  
+  <Footer locale={locale} />
+</Layout>

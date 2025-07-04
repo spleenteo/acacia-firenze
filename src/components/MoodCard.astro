@@ -1,0 +1,31 @@
+---
+import type { MoodBaseFragment } from '@lib/datocms/types'
+
+export interface Props {
+  mood: MoodBaseFragment
+  locale: string
+}
+
+const { mood, locale } = Astro.props
+---
+
+<a 
+  href={`/${locale}/moods/${mood.slug}`}
+  class="group cursor-pointer block"
+>
+  <div class="relative aspect-[4/3] overflow-hidden rounded-lg">
+    <img 
+      src={mood.image?.url}
+      alt={mood.image?.alt || mood.name}
+      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+      <div>
+        <h3 class="text-white text-2xl font-semibold mb-2">{mood.name}</h3>
+        {mood.claim && (
+          <p class="text-white/90 text-sm">{mood.claim}</p>
+        )}
+      </div>
+    </div>
+  </div>
+</a>

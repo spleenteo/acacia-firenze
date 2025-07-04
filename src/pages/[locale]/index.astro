@@ -1,0 +1,145 @@
+---
+import Layout from '@layouts/Layout.astro'
+import Navigation from '@components/Navigation.astro'
+import Footer from '@components/Footer.astro'
+import ApartmentCard from '@components/ApartmentCard.astro'
+import MoodCard from '@components/MoodCard.astro'
+import { getSupportedLocales } from '@lib/i18n'
+import { getHomePageOriginal, getAllApartments } from '@lib/datocms/api'
+import type { GetStaticPaths } from 'astro'
+
+export const prerender = true
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const locales = await getSupportedLocales()
+  
+  return locales.map((locale) => ({
+    params: { locale },
+    props: { locale }
+  }))
+}
+
+const { locale } = Astro.params as { locale: string }
+
+// Validate locale exists
+if (!locale) {
+  throw new Error('Locale parameter is required')
+}
+
+// Fetch data from DatoCMS
+const homePage = await getHomePageOriginal(locale)
+const apartments = await getAllApartments(locale, 6) // Get first 6 apartments
+
+// SEO meta tags
+const seoMetaTags = homePage?._seoMetaTags || []
+---
+
+<Layout 
+  title={homePage?.seo?.title || homePage?.title}
+  description={homePage?.seo?.description}
+  image={homePage?.seo?.image?.url}
+  locale={locale}
+>
+  <Navigation locale={locale} />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
+      <div class="container-acacia text-center">
+        <h1 class="heading-display text-acacia-primary mb-8 max-w-4xl mx-auto">
+          {homePage?.claim || 'Acacia Firenze'}
+        </h1>
+        
+        <div class="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto mt-12">
+          <div class="text-left">
+            <h2 class="text-2xl font-semibold text-acacia-primary mb-4">Stay</h2>
+            <p class="text-gray-600 leading-relaxed">{homePage?.stayText}</p>
+          </div>
+          <div class="text-left">
+            <h2 class="text-2xl font-semibold text-acacia-primary mb-4">Do</h2>
+            <p class="text-gray-600 leading-relaxed">{homePage?.doText}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Apartments Preview -->
+    {apartments.length > 0 && (
+      <section class="py-20 bg-white">
+        <div class="container-acacia">
+          <h2 class="heading-2 text-center text-acacia-primary mb-12">
+            {locale === 'it' ? 'I Nostri Appartamenti' : 'Our Apartments'}
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {apartments.slice(0, 6).map((apartment) => (
+              <ApartmentCard apartment={apartment} locale={locale} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Moods Section -->
+    {homePage?.moods && homePage.moods.length > 0 && (
+      <section class="py-20 bg-gray-50">
+        <div class="container-acacia">
+          <h2 class="heading-2 text-center text-acacia-primary mb-4">
+            {homePage.moodsTitle || (locale === 'it' ? 'Atmosfere' : 'Moods')}
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            {homePage.moods.map((mood) => (
+              <MoodCard mood={mood} locale={locale} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Promo Section -->
+    {homePage?.promo && homePage.promo.length > 0 && (
+      <section class="py-20 bg-white">
+        <div class="container-acacia">
+          {homePage.promoTitle && (
+            <h2 class="heading-2 text-center text-acacia-primary mb-12">
+              {homePage.promoTitle}
+            </h2>
+          )}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {homePage.promo.map((promo) => (
+              promo.apartment && (
+                <ApartmentCard 
+                  apartment={promo.apartment} 
+                  locale={locale}
+                  customImage={promo.foto}
+                  customDescription={promo.description}
+                />
+              )
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- CTA Section -->
+    {homePage?.ctaText && (
+      <section class="py-20 bg-acacia-primary text-white">
+        <div class="container-acacia text-center">
+          <div class="max-w-3xl mx-auto">
+            <p class="text-xl mb-8 leading-relaxed">{homePage.ctaText}</p>
+            {homePage.ctaLabel && (
+              <a 
+                href={`/${locale}/accommodations`}
+                class="inline-block bg-white text-acacia-primary px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              >
+                {homePage.ctaLabel}
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+  
+  <Footer locale={locale} />
+</Layout>

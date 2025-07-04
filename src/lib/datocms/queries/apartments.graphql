@@ -1,0 +1,68 @@
+fragment ApartmentBase on ApartmentRecord {
+  id
+  name
+  slug
+  description
+  claim
+  highlight
+  price
+  bedrooms
+  bathrooms
+  sleeps
+  acaciaReward
+  published
+  position
+  boxImage {
+    url
+    alt
+    title
+  }
+  featuredImage {
+    url
+    alt
+    title
+  }
+  category {
+    id
+    name
+    slug
+  }
+  district {
+    id
+    name
+    slug
+  }
+}
+
+query GetAllApartments($locale: SiteLocale!, $first: IntType = 100) {
+  allApartments(locale: $locale, first: $first, orderBy: position_ASC, filter: { published: { eq: true } }) {
+    ...ApartmentBase
+  }
+}
+
+query GetApartmentBySlug($locale: SiteLocale!, $slug: String!) {
+  apartment(locale: $locale, filter: { slug: { eq: $slug } }) {
+    ...ApartmentBase
+    seo {
+      title
+      description
+      image {
+        url
+      }
+    }
+    gallery {
+      id
+      image {
+        url
+        alt
+        title
+      }
+    }
+    cuddles {
+      id
+    }
+    ups {
+      id
+    }
+  }
+}

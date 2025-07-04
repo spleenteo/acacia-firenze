@@ -1,0 +1,70 @@
+fragment MoodBase on MoodRecord {
+  id
+  name
+  slug
+  description
+  claim
+  image {
+    url
+    alt
+    title
+  }
+}
+
+query GetAllMoods($locale: SiteLocale!) {
+  allMoods(locale: $locale, orderBy: position_ASC) {
+    ...MoodBase
+  }
+}
+
+query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
+  mood(locale: $locale, filter: { slug: { eq: $slug } }) {
+    ...MoodBase
+    seo {
+      title
+      description
+      image {
+        url
+      }
+    }
+    boxes {
+      ... on ApartmentRecord {
+        __typename
+        id
+        name
+        slug
+        claim
+        highlight
+        price
+        bedrooms
+        bathrooms
+        sleeps
+        featuredImage {
+          url
+          alt
+        }
+        boxImage {
+          url
+          alt
+        }
+        district {
+          name
+          slug
+        }
+      }
+      ... on DistrictsRecord {
+        __typename
+        id
+        name
+        slug
+        abstract
+        gallery {
+          image {
+            url
+            alt
+          }
+        }
+      }
+    }
+  }
+}

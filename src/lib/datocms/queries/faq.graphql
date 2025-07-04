@@ -1,0 +1,20 @@
+query GetAllFaqs($locale: SiteLocale!) {
+  allFaqs(locale: $locale, orderBy: position_ASC) {
+    id
+    question
+    answer
+    position
+  }
+  
+  pageFaq(locale: $locale) {
+    id
+    title
+    seo {
+      title
+      description
+      image {
+        url
+      }
+    }
+  }
+}

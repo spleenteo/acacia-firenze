@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "accommodations": "Alloggi",
+    "districts": "Quartieri",
+    "experiences": "Esperienze",
+    "moods": "Atmosfere",
+    "events": "Eventi",
+    "blog": "Blog",
+    "guestbook": "Libro degli ospiti",
+    "faq": "FAQ",
+    "offers": "Offerte"
+  },
+  "common": {
+    "readMore": "Leggi di più",
+    "bookNow": "Prenota ora",
+    "contact": "Contatti",
+    "newsletter": "Newsletter",
+    "subscribe": "Iscriviti",
+    "language": "Lingua",
+    "close": "Chiudi",
+    "menu": "Menu"
+  },
+  "footer": {
+    "rights": "Tutti i diritti riservati",
+    "privacy": "Privacy Policy",
+    "terms": "Termini e Condizioni",
+    "followUs": "Seguici"
+  }
+}

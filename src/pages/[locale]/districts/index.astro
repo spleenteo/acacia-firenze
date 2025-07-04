@@ -1,0 +1,127 @@
+---
+import Layout from '@layouts/Layout.astro'
+import Navigation from '@components/Navigation.astro'
+import Footer from '@components/Footer.astro'
+import { Icon } from 'astro-icon/components'
+import { getSupportedLocales } from '@lib/i18n'
+import { getAllDistricts } from '@lib/datocms/api'
+
+export const prerender = false
+
+const { locale } = Astro.params as { locale: string }
+
+if (!locale) {
+  throw new Error('Locale parameter is required')
+}
+
+const districts = await getAllDistricts(locale)
+---
+
+<Layout 
+  title={locale === 'it' ? 'I Quartieri di Firenze' : 'Florence and its districts'}
+  description={locale === 'it' ? 'Scopri i quartieri di Firenze e trova il tuo appartamento ideale' : 'Discover Florence districts and find your perfect apartment'}
+  locale={locale}
+>
+  <Navigation locale={locale} />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <div class="container-acacia">
+        <h1 class="heading-display text-acacia-primary text-center mb-8">
+          {locale === 'it' ? 'Firenze e i suoi quartieri' : 'Florence and its districts'}
+        </h1>
+        <p class="text-xl text-gray-700 text-center max-w-3xl mx-auto">
+          {locale === 'it' 
+            ? 'Scopri a piedi i due lati del fiume'
+            : 'Discover by foot the two sides of the river'}
+        </p>
+        
+        <div class="mt-12 max-w-4xl mx-auto">
+          <p class="text-gray-600 leading-relaxed mb-6">
+            {locale === 'it' 
+              ? "Firenze è una città che si può esplorare facilmente a piedi. Il centro storico è diviso dal fiume Arno, che scorre da est a ovest, creando due sponde: l'Oltrarno a sud e il centro storico principale a nord."
+              : "Florence is a city that can easily be explored on foot. The historic center is divided by the Arno River, which flows from east to west, creating two banks: the Oltrarno to the south and the main historic center to the north."}
+          </p>
+          <p class="text-gray-600 leading-relaxed">
+            {locale === 'it'
+              ? "I ponti storici collegano i quartieri, ognuno con la propria identità unica, dalle botteghe artigiane dell'Oltrarno ai palazzi rinascimentali del centro."
+              : "Historic bridges connect the districts, each with its own unique identity, from the artisan workshops of Oltrarno to the Renaissance palaces of the center."}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Districts Grid -->
+    <section class="py-20 bg-white">
+      <div class="container-acacia">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {districts.map((district) => (
+            <a 
+              href={`/${locale}/districts/${district.slug}`}
+              class="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-acacia-primary"
+            >
+              {district.gallery && district.gallery.length > 0 && district.gallery[0].image && (
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img 
+                    src={district.gallery[0].image.url}
+                    alt={district.gallery[0].image.alt || district.name}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              )}
+              <div class="p-8">
+                <h2 class="text-2xl font-semibold text-acacia-primary group-hover:text-acacia-secondary transition-colors">
+                  {district.name}
+                </h2>
+                {district.abstract && (
+                  <p class="text-gray-600 mt-4 line-clamp-3">
+                    {district.abstract}
+                  </p>
+                )}
+                <span class="inline-flex items-center mt-4 text-acacia-secondary font-semibold group-hover:gap-2 transition-all">
+                  {locale === 'it' ? 'Scopri di più' : 'Discover more'}
+                  <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- River Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container-acacia">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="heading-2 text-acacia-primary mb-6">
+              {locale === 'it' ? "L'Arno e i suoi ponti" : 'The Arno and its bridges'}
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+              {locale === 'it'
+                ? "Il fiume Arno è l'anima di Firenze, con i suoi ponti storici che raccontano secoli di storia. Dal famoso Ponte Vecchio con le sue botteghe orafe, al Ponte Santa Trinita con la sua eleganza rinascimentale, ogni attraversamento offre una prospettiva unica sulla città."
+                : "The Arno River is the soul of Florence, with its historic bridges telling centuries of history. From the famous Ponte Vecchio with its goldsmith shops, to Ponte Santa Trinita with its Renaissance elegance, each crossing offers a unique perspective on the city."}
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+              {locale === 'it'
+                ? "Passeggiare lungo i lungarni al tramonto, quando la luce dorata si riflette sull'acqua, è un'esperienza che rimane nel cuore di ogni visitatore."
+                : "Walking along the lungarni at sunset, when the golden light reflects on the water, is an experience that remains in the heart of every visitor."}
+            </p>
+          </div>
+          <div class="relative">
+            <div class="aspect-[4/3] bg-gray-200 rounded-lg overflow-hidden">
+              <div class="w-full h-full bg-gradient-to-br from-acacia-primary/20 to-acacia-secondary/20 flex items-center justify-center">
+                <Icon name="iconoir:bridge-3d" class="w-16 h-16 text-acacia-primary/50" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer locale={locale} />
+</Layout>

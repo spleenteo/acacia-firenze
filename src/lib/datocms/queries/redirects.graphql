@@ -1,0 +1,8 @@
+query GetAllRedirects {
+  allRedirects {
+    id
+    originalUrl
+    destinationUrl
+    codiceRedirect
+  }
+}

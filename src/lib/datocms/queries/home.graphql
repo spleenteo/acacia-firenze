@@ -1,0 +1,28 @@
+fragment SeoMetaTags on Tag {
+  attributes
+  content
+  tag
+}
+
+query GetHomePage($locale: SiteLocale!) {
+  homePage(locale: $locale) {
+    id
+    title
+    seo {
+      title
+      description
+      image {
+        url
+      }
+      twitterCard
+    }
+    _seoMetaTags {
+      ...SeoMetaTags
+    }
+    moods {
+      id
+      name
+      slug
+    }
+  }
+}

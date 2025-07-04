@@ -1,0 +1,53 @@
+---
+import { ViewTransitions } from 'astro:transitions'
+import type { Locale } from '../lib/i18n'
+import { generateMetaTags, generateAlternateLinks } from '../lib/seo'
+import { getSupportedLocales } from '../lib/i18n'
+import '../app.css'
+
+export interface Props {
+  title?: string
+  description?: string
+  image?: string
+  noindex?: boolean
+  locale: Locale
+}
+
+const { title, description, image, noindex, locale } = Astro.props
+const metaTags = generateMetaTags(
+  { title, description, image, noindex },
+  locale,
+  new URL(Astro.url)
+)
+// For now, use hardcoded locales for alternate links since this is sync
+const alternateLinks = generateAlternateLinks(Astro.url.pathname, ['it', 'en'])
+---
+
+<!doctype html>
+<html lang={locale} data-theme="acacia">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    {metaTags.map((tag) => {
+      if ('property' in tag) {
+        return <meta property={tag.property} content={tag.content} />
+      }
+      return <meta name={tag.name} content={tag.content} />
+    })}
+    
+    {alternateLinks.map((link) => (
+      <link rel={link.rel} hreflang={link.hreflang} href={link.href} />
+    ))}
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <ViewTransitions />
+  </head>
+  <body class="min-h-screen bg-base-100">
+    <slot />
+  </body>
+</html>

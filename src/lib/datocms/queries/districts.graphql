@@ -1,0 +1,26 @@
+fragment DistrictBase on DistrictsRecord {
+  id
+  name
+  slug
+  description
+  abstract
+}
+
+query GetAllDistricts($locale: SiteLocale!) {
+  allDistricts(locale: $locale, orderBy: position_ASC) {
+    ...DistrictBase
+  }
+}
+
+query GetDistrictBySlug($locale: SiteLocale!, $slug: String!) {
+  districts(locale: $locale, filter: { slug: { eq: $slug } }) {
+    ...DistrictBase
+    seo {
+      title
+      description
+      image {
+        url
+      }
+    }
+  }
+}

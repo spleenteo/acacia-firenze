@@ -1,0 +1,5 @@
+query AllLocales {
+  _site {
+    locales
+  }
+}

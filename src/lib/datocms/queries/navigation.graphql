@@ -1,0 +1,59 @@
+query GetNavigationData($locale: SiteLocale!) {
+  # Main Pages
+  apartmentsPage(locale: $locale) {
+    id
+    title
+  }
+  
+  pageDistricts(locale: $locale) {
+    id
+    title
+  }
+  
+  pageServices(locale: $locale) {
+    id
+    title
+  }
+  
+  pageMoods(locale: $locale) {
+    id
+    title
+  }
+  
+  pageEvent(locale: $locale) {
+    id
+    title
+  }
+  
+  pageBlog(locale: $locale) {
+    id
+    title
+  }
+  
+  pageGuestbook(locale: $locale) {
+    id
+    title
+  }
+  
+  pageFaq(locale: $locale) {
+    id
+    title
+  }
+  
+  pageOffers(locale: $locale) {
+    id
+    title
+  }
+}
+
+query GetAllPages($locale: SiteLocale!) {
+  allPages(locale: $locale) {
+    id
+    title
+    slug
+    seo {
+      title
+      description
+    }
+  }
+}

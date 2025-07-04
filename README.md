@@ -1,47 +1,75 @@
-# Astro Starter Kit: Minimal
+# Acacia Firenze
 
-```sh
-npm create astro@latest -- --template minimal
+A modern Astro-based website for Acacia Firenze, featuring:
+- 🌐 Multi-language support (Italian/English)
+- 🎨 Tailwind CSS + DaisyUI for styling
+- 📊 DatoCMS integration for content management
+- 🔄 SEO-ready with redirect management
+- ⚡ Server-side rendering with Vite
+
+## Setup
+
+1. Install dependencies:
+```bash
+npm install
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+2. Configure environment variables:
+Create a `.env` file with:
+```
+DATOCMS_API_TOKEN=your_api_token_here
+DATOCMS_ENVIRONMENT=main
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+3. Run development server:
+```bash
+npm run dev
+```
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Project Structure
 
-Any static assets, like images, can be placed in the `public/` directory.
+```
+src/
+├── components/     # Reusable Astro components
+├── layouts/        # Page layouts
+├── lib/
+│   ├── datocms/   # DatoCMS integration
+│   ├── i18n/      # Internationalization
+│   └── seo/       # SEO utilities
+├── middleware/     # Request middleware
+├── pages/         # Route pages
+│   ├── it/        # Italian pages
+│   └── en/        # English pages
+└── styles/        # Global styles
+```
 
-## 🧞 Commands
+## Available Scripts
 
-All commands are run from the root of the project, from a terminal:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run codegen` - Generate TypeScript types from GraphQL
+- `npm run codegen:watch` - Watch mode for GraphQL codegen
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## DatoCMS Integration
 
-## 👀 Want to learn more?
+The project uses DatoCMS for content management. GraphQL queries are defined in `src/lib/datocms/queries.graphql`.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+To generate TypeScript types from your GraphQL schema:
+```bash
+npm run codegen
+```
+
+## Deployment
+
+For production deployment, you'll need to:
+1. Install an Astro adapter (e.g., `@astrojs/vercel`, `@astrojs/netlify`)
+2. Configure the adapter in `astro.config.mjs`
+3. Build the project with `npm run build`
+
+## Next Steps
+
+1. Set up content models in DatoCMS
+2. Create GraphQL queries for your content
+3. Build out the remaining pages
+4. Configure production deployment
