@@ -15,6 +15,7 @@ Acacia Firenze showcases luxury apartments in the historic center of Florence, p
 - ⚡ Server-side rendering with Cloudflare Pages
 - 🔍 Fuzzy search functionality
 - 🎯 SEO optimized with DatoCMS integration
+- 📅 Integrated Beddy.io booking widget
 
 ## 🚀 Live Demo
 
@@ -68,7 +69,8 @@ src/
 │   ├── DistrictCard.astro
 │   ├── MoodCard.astro
 │   ├── Navigation.astro
-│   └── Footer.astro
+│   ├── Footer.astro
+│   └── BeddyWidget.astro
 ├── layouts/          # Page layouts
 ├── lib/
 │   ├── datocms/     # DatoCMS integration & queries
@@ -111,6 +113,15 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
 Required environment variables:
 - `DATOCMS_API_TOKEN` - Read-only API token from DatoCMS
 - `DATOCMS_ENVIRONMENT` - DatoCMS environment (default: main)
+
+## 🔌 Third-Party Integrations
+
+### Beddy.io Booking Widget
+The site integrates with Beddy.io for real-time booking functionality:
+- Displays on apartment detail pages and home page
+- Configured via `beddyId` field in DatoCMS
+- Automatically loads when `beddyId` is present
+- Responsive and mobile-friendly
 
 ## 📝 Documentation
 

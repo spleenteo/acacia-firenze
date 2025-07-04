@@ -51,7 +51,8 @@ Acacia Firenze is a luxury apartment rental website for Florence, Italy. The pro
 - `MoodCard.astro` - Mood display card
 - `DistrictCard.astro` - District display card
 - `Navigation.astro` - Site navigation
-- `Footer.astro` - Site footer
+- `Footer.astro` - Site footer (accepts `hasBottomWidget` prop for conditional padding)
+- `BeddyWidget.astro` - Reusable Beddy booking widget component
 
 ## DatoCMS Integration
 
@@ -90,6 +91,7 @@ Run `npm run codegen` to regenerate TypeScript types from DatoCMS schema.
 ### Layout
 - `container-acacia` - Standard content container
 - Responsive grid system using Tailwind classes
+- `body-end` slot in Layout component for injecting content at the end of body
 
 ## Development Commands
 
@@ -146,6 +148,25 @@ Using Iconoir icon set via astro-icon:
 ## Environment Variables
 Required in `.env`:
 - `DATOCMS_API_TOKEN` - Read-only API token from DatoCMS
+
+## Third-Party Integrations
+
+### Beddy Booking Widget
+The site integrates with Beddy.io for online booking functionality:
+
+- **Component**: `BeddyWidget.astro` - Reusable component that accepts `locale` and `beddyId` props
+- **Implementation**: Uses custom `<beddy-bar>` HTML element with `lang` and `widgetcode` attributes
+- **Script**: Loads from `https://cdn.beddy.io/bol/prod/beddybar.js?release13052020_v0`
+- **CMS Fields**: 
+  - Apartments: `beddyId` field
+  - Home Page: `beddyId` field
+- **Placement**: Renders at the end of the body using the `body-end` slot
+- **Footer Adjustment**: Footer component accepts `hasBottomWidget` prop to add extra bottom padding when widget is present
+
+#### Usage Example
+```astro
+<BeddyWidget locale={locale} beddyId={apartment.beddyId} />
+```
 
 ## Deployment
 
