@@ -1,107 +1,44 @@
-# Cloudflare Deployment Guide
+# Deployment Guide
 
-## Prerequisites
+## Current Setup
+The project is configured for Cloudflare Pages deployment. However, direct uploads via `wrangler` always create preview deployments.
 
-1. A Cloudflare account
-2. Wrangler CLI authenticated: `npx wrangler login`
-3. Environment variables configured
+## Recommended: Connect GitHub to Cloudflare Pages
 
-## Initial Setup
+For automatic production deployments:
 
-### 1. Create a Cloudflare Pages Project
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. Navigate to your Pages project: `acacia-firenze`
+3. Go to Settings → Build & deployments
+4. Click "Connect to Git"
+5. Select your GitHub repository: `spleenteo/acacia-firenze`
+6. Configure:
+   - Production branch: `main`
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Environment variables:
+     - `DATOCMS_API_TOKEN`: (your token)
+     - `DATOCMS_ENVIRONMENT`: `start`
 
-First deployment will create the project automatically:
-```bash
-npm run deploy:test
-```
+Once connected:
+- Pushes to `main` → Production deployment
+- Pushes to other branches → Preview deployments
+- No manual promotion needed
 
-### 2. Configure Environment Variables
+## Manual Deployment (Current Method)
 
-In the Cloudflare Dashboard:
-1. Go to Workers & Pages > acacia-firenze > Settings > Environment variables
-2. Add the following variables for Production:
-   - `DATOCMS_API_TOKEN`: Your DatoCMS read-only API token
-   - `DATOCMS_ENVIRONMENT`: The DatoCMS environment to use (e.g., `start`, `main`)
-
-### 3. Configure Custom Domain (Optional)
-
-In the Cloudflare Dashboard:
-1. Go to Workers & Pages > acacia-firenze > Custom domains
-2. Add your custom domain
-
-## Deployment Commands
-
-### Test Deployment (Preview)
-```bash
-npm run deploy:test
-```
-This creates a preview deployment with a unique URL.
-
-### Production Deployment
+### Deploy to Preview
 ```bash
 npm run deploy
 ```
-This deploys to the main production branch.
 
-### Local Preview
-```bash
-npm run build:cloudflare
-npm run preview:cloudflare
-```
-This builds and runs the site locally using Wrangler.
+### Promote to Production
+1. After running `npm run deploy`, note the preview URL (e.g., `https://929201eb.acacia-firenze.pages.dev`)
+2. Go to [Cloudflare Pages Dashboard](https://dash.cloudflare.com/1ed0bcbfc2f1e696c278f37de34d8ef2/pages/view/acacia-firenze)
+3. Find your deployment in the list
+4. Click "Promote to Production"
 
-## Build Process
-
-The build process:
-1. Runs `astro build` with Cloudflare adapter
-2. Generates static pages for districts (prerender = true)
-3. Creates server-side functions for dynamic pages
-4. Outputs to `dist/` directory
-5. Deploys to Cloudflare Pages
-
-## Important Notes
-
-- **Static vs Dynamic**: District pages are static, while accommodations and moods are dynamic
-- **Environment Variables**: Must be set in Cloudflare Dashboard, not in wrangler.toml
-- **Build Time**: First build may take longer due to icon generation
-- **Compatibility**: Uses `nodejs_compat` flag for Node.js compatibility
-
-## Troubleshooting
-
-### Icon Build Errors
-If you see "Unable to locate icon" errors:
-1. Check icon names match available Iconoir icons
-2. Run `npm install` to ensure all dependencies are installed
-
-### Environment Variable Issues
-If the site can't connect to DatoCMS:
-1. Verify DATOCMS_API_TOKEN is set in Cloudflare Dashboard
-2. Verify DATOCMS_ENVIRONMENT is set in Cloudflare Dashboard
-3. Check the token has read permissions
-4. Ensure the token is for the correct DatoCMS project
-
-**Important Note for SSR Pages**: 
-Cloudflare Pages environment variables are only available at runtime, not build time. This means:
-- Static pages (prerender = true) won't have access to Cloudflare env vars
-- Dynamic SSR pages need special handling to access runtime env vars
-- Consider using static generation for all pages if possible
-
-### Build Failures
-If builds fail:
-1. Run `npm run build` locally first to check for errors
-2. Check the Cloudflare Pages build logs
-3. Ensure all dependencies are in package.json (not devDependencies)
-
-## Monitoring
-
-View your deployments:
-- Dashboard: https://dash.cloudflare.com/
-- Direct URL: https://acacia-firenze.pages.dev
-- Custom domain: (your configured domain)
-
-## Rollback
-
-To rollback to a previous version:
-1. Go to Workers & Pages > acacia-firenze > Deployments
-2. Find the previous working deployment
-3. Click "Rollback to this deployment"
+## Environment Variables
+Make sure these are set in Cloudflare Pages:
+- `DATOCMS_API_TOKEN`
+- `DATOCMS_ENVIRONMENT` (optional, defaults to 'start')
