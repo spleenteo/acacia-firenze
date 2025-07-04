@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
+import { DATOCMS_API_TOKEN, DATOCMS_ENVIRONMENT } from 'astro:env/server'
 
 const endpoint = 'https://graphql.datocms.com/'
 
@@ -12,11 +13,19 @@ export async function datocmsRequest<TResult, TVariables = any>(
   variables?: TVariables,
   options: DatoCMSRequestOptions = {}
 ): Promise<TResult> {
-  const { preview = false, environment = import.meta.env.DATOCMS_ENVIRONMENT || 'start' } = options
+  const { preview = false, environment = DATOCMS_ENVIRONMENT || 'start' } = options
+  
+  // Get API token from Astro env
+  const apiToken = DATOCMS_API_TOKEN
+  
+  if (!apiToken) {
+    console.error('DATOCMS_API_TOKEN is not available')
+    throw new Error('Missing DATOCMS_API_TOKEN')
+  }
   
   const client = new GraphQLClient(endpoint, {
     headers: {
-      Authorization: `Bearer ${import.meta.env.DATOCMS_API_TOKEN}`,
+      Authorization: `Bearer ${apiToken}`,
       'X-Environment': environment,
       ...(preview && { 'X-Include-Drafts': 'true' }),
     },

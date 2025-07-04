@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import icon from "astro-icon";
 import cloudflare from "@astrojs/cloudflare";
@@ -8,11 +8,24 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   output: 'server',
   adapter: cloudflare({
-    mode: 'advanced',
     platformProxy: {
       enabled: true,
-    },
+    }
   }),
+  env: {
+    schema: {
+      DATOCMS_API_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: process.env.DATOCMS_API_TOKEN
+      }),
+      DATOCMS_ENVIRONMENT: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: process.env.DATOCMS_ENVIRONMENT || 'start'
+      })
+    }
+  },
   integrations: [icon()],
   vite: {
     plugins: [tailwindcss()],

@@ -1,0 +1,49 @@
+---
+export const prerender = false
+
+// Test different ways to access environment variables
+const envSources = {
+  importMeta: {
+    DATOCMS_API_TOKEN: import.meta.env.DATOCMS_API_TOKEN ? 'set' : 'not set',
+    DATOCMS_ENVIRONMENT: import.meta.env.DATOCMS_ENVIRONMENT || 'not set',
+    MODE: import.meta.env.MODE,
+    PROD: import.meta.env.PROD,
+  },
+  locals: {
+    hasLocals: !!Astro.locals,
+    hasRuntime: !!Astro.locals?.runtime,
+    hasRuntimeEnv: !!Astro.locals?.runtime?.env,
+    hasEnv: !!(Astro.locals as any)?.env,
+  },
+  process: {
+    hasProcess: typeof process !== 'undefined',
+    hasEnv: typeof process !== 'undefined' && !!process.env,
+  }
+}
+
+// Try to get actual values
+let apiToken = 'not found'
+let environment = 'not found'
+
+if (Astro.locals?.runtime?.env) {
+  apiToken = Astro.locals.runtime.env.DATOCMS_API_TOKEN ? 'found in runtime.env' : 'not in runtime.env'
+  environment = Astro.locals.runtime.env.DATOCMS_ENVIRONMENT || 'not in runtime.env'
+} else if ((Astro.locals as any)?.env) {
+  apiToken = (Astro.locals as any).env.DATOCMS_API_TOKEN ? 'found in locals.env' : 'not in locals.env'
+  environment = (Astro.locals as any).env.DATOCMS_ENVIRONMENT || 'not in locals.env'
+}
+---
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Environment Test</title>
+</head>
+<body>
+  <h1>Environment Variables Test</h1>
+  <pre>{JSON.stringify(envSources, null, 2)}</pre>
+  <h2>Result:</h2>
+  <p>API Token: {apiToken}</p>
+  <p>Environment: {environment}</p>
+</body>
+</html>

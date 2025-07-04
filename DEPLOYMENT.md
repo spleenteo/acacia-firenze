@@ -21,6 +21,7 @@ In the Cloudflare Dashboard:
 1. Go to Workers & Pages > acacia-firenze > Settings > Environment variables
 2. Add the following variables for Production:
    - `DATOCMS_API_TOKEN`: Your DatoCMS read-only API token
+   - `DATOCMS_ENVIRONMENT`: The DatoCMS environment to use (e.g., `start`, `main`)
 
 ### 3. Configure Custom Domain (Optional)
 
@@ -75,8 +76,15 @@ If you see "Unable to locate icon" errors:
 ### Environment Variable Issues
 If the site can't connect to DatoCMS:
 1. Verify DATOCMS_API_TOKEN is set in Cloudflare Dashboard
-2. Check the token has read permissions
-3. Ensure the token is for the correct DatoCMS project
+2. Verify DATOCMS_ENVIRONMENT is set in Cloudflare Dashboard
+3. Check the token has read permissions
+4. Ensure the token is for the correct DatoCMS project
+
+**Important Note for SSR Pages**: 
+Cloudflare Pages environment variables are only available at runtime, not build time. This means:
+- Static pages (prerender = true) won't have access to Cloudflare env vars
+- Dynamic SSR pages need special handling to access runtime env vars
+- Consider using static generation for all pages if possible
 
 ### Build Failures
 If builds fail:

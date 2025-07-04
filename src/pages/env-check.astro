@@ -1,0 +1,19 @@
+---
+export const prerender = false
+
+// Log to server console
+console.log('ENV CHECK:')
+console.log('- import.meta.env.DATOCMS_API_TOKEN:', import.meta.env.DATOCMS_API_TOKEN ? 'EXISTS' : 'NOT FOUND')
+console.log('- import.meta.env.DATOCMS_ENVIRONMENT:', import.meta.env.DATOCMS_ENVIRONMENT || 'NOT FOUND')
+console.log('- Astro.locals:', Object.keys(Astro.locals || {}))
+---
+
+<html>
+<head>
+  <title>Env Check</title>
+</head>
+<body>
+  <h1>Environment Check</h1>
+  <p>Check server logs for details</p>
+</body>
+</html>

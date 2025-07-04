@@ -43,5 +43,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // Store locale in locals for use in components
   context.locals.locale = urlLocale
   
+  // In Cloudflare Pages, expose env to locals
+  if (context.env) {
+    context.locals.env = context.env
+  }
+  
   return next()
 })
