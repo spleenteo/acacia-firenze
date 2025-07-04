@@ -44,6 +44,12 @@ const seoMetaTags = homePage?._seoMetaTags || []
   <Navigation locale={locale} />
   
   <main>
+    <Fragment slot="body-end">
+      {homePage?.beddyId && (
+        <BeddyWidget locale={locale} beddyId={homePage.beddyId} />
+      )}
+    </Fragment>
+
     <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
       <div class="container-acacia text-center">
@@ -63,28 +69,6 @@ const seoMetaTags = homePage?._seoMetaTags || []
         </div>
       </div>
     </section>
-
-      <Fragment slot="body-end">
-    {homePage?.beddyId && (
-      <BeddyWidget locale={locale} beddyId={homePage.beddyId} />
-    )}
-  </Fragment>
-
-    <!-- Apartments Preview -->
-    {apartments.length > 0 && (
-      <section class="py-20 bg-white">
-        <div class="container-acacia">
-          <h2 class="heading-2 text-center text-acacia-primary mb-12">
-            {locale === 'it' ? 'I Nostri Appartamenti' : 'Our Apartments'}
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {apartments.slice(0, 6).map((apartment) => (
-              <ApartmentCard apartment={apartment} locale={locale} />
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <!-- Moods Section -->
     {homePage?.moods && homePage.moods.length > 0 && (
