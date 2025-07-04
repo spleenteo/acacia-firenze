@@ -148,4 +148,28 @@ Required in `.env`:
 - `DATOCMS_API_TOKEN` - Read-only API token from DatoCMS
 
 ## Deployment
-The site is configured for server-side rendering. Ensure your hosting platform supports Node.js runtime for Astro SSR.
+
+The site is deployed on Cloudflare Pages with server-side rendering support.
+
+### Current Status
+- Preview URL: https://086ec123.acacia-firenze.pages.dev
+- Production URL: https://acacia-firenze.pages.dev
+- Cloudflare Project: acacia-firenze
+
+### Deployment Configuration
+- **Adapter**: @astrojs/cloudflare (advanced mode)
+- **Build Output**: dist/
+- **Functions**: _worker.js for SSR
+- **Static Assets**: Prerendered district pages
+
+### Important Deployment Notes
+1. Environment variables must be set in Cloudflare Dashboard
+2. The SESSION KV binding warning can be ignored
+3. Uses nodejs_compat for Node.js compatibility
+4. District pages are statically generated at build time
+5. All other pages use server-side rendering
+
+### Deployment Commands
+- `npm run deploy:test` - Deploy to preview branch
+- `npm run deploy` - Deploy to production branch
+- `npm run preview:cloudflare` - Test locally with wrangler

@@ -1,75 +1,126 @@
 # Acacia Firenze
 
-A modern Astro-based website for Acacia Firenze, featuring:
-- 🌐 Multi-language support (Italian/English)
-- 🎨 Tailwind CSS + DaisyUI for styling
-- 📊 DatoCMS integration for content management
-- 🔄 SEO-ready with redirect management
-- ⚡ Server-side rendering with Vite
+Luxury apartment rental website for Florence, Italy. Built with Astro, Tailwind CSS, and DatoCMS.
 
-## Setup
+## 🏛️ Overview
 
-1. Install dependencies:
+Acacia Firenze showcases luxury apartments in the historic center of Florence, providing a seamless booking experience with multi-language support (Italian/English) and dynamic content management.
+
+### Key Features
+- 🌐 Multi-language support (IT/EN)
+- 🏠 Dynamic apartment listings with advanced filtering
+- 🗺️ District-based exploration of Florence
+- 🎨 Mood-based thematic collections
+- 📱 Fully responsive design
+- ⚡ Server-side rendering with Cloudflare Pages
+- 🔍 Fuzzy search functionality
+- 🎯 SEO optimized with DatoCMS integration
+
+## 🚀 Live Demo
+
+- Preview: https://086ec123.acacia-firenze.pages.dev
+- Production: https://acacia-firenze.pages.dev (configure in Cloudflare)
+- GitHub: https://github.com/spleenteo/acacia-firenze
+
+## 🛠️ Tech Stack
+
+- **Framework**: Astro 5.0 (SSR mode)
+- **Styling**: Tailwind CSS 4.0 + DaisyUI
+- **CMS**: DatoCMS (GraphQL API)
+- **Icons**: Iconify (Iconoir set)
+- **Deployment**: Cloudflare Pages
+- **Type Safety**: TypeScript + GraphQL Code Generator
+
+## 📦 Installation
+
 ```bash
+# Clone the repository
+git clone https://github.com/spleenteo/acacia-firenze.git
+cd acacia-firenze
+
+# Install dependencies
 npm install
+
+# Copy environment variables
+cp .env.example .env
+# Add your DatoCMS API token to .env
 ```
 
-2. Configure environment variables:
-Create a `.env` file with:
-```
-DATOCMS_API_TOKEN=your_api_token_here
-DATOCMS_ENVIRONMENT=main
-```
+## 🧞 Commands
 
-3. Run development server:
-```bash
-npm run dev
-```
+| Command | Action |
+|---------|--------|
+| `npm run dev` | Start local dev server at `localhost:4321` |
+| `npm run build` | Build production site to `./dist/` |
+| `npm run preview` | Preview build locally |
+| `npm run codegen` | Generate TypeScript types from GraphQL |
+| `npm run codegen:watch` | Watch mode for GraphQL codegen |
+| `npm run preview:cloudflare` | Preview with Cloudflare locally |
+| `npm run deploy:test` | Deploy to Cloudflare preview |
+| `npm run deploy` | Deploy to Cloudflare production |
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 src/
-├── components/     # Reusable Astro components
-├── layouts/        # Page layouts
+├── components/        # Reusable Astro components
+│   ├── ApartmentCard.astro
+│   ├── DistrictCard.astro
+│   ├── MoodCard.astro
+│   ├── Navigation.astro
+│   └── Footer.astro
+├── layouts/          # Page layouts
 ├── lib/
-│   ├── datocms/   # DatoCMS integration
-│   ├── i18n/      # Internationalization
-│   └── seo/       # SEO utilities
-├── middleware/     # Request middleware
-├── pages/         # Route pages
-│   ├── it/        # Italian pages
-│   └── en/        # English pages
-└── styles/        # Global styles
+│   ├── datocms/     # DatoCMS integration & queries
+│   ├── i18n/        # Internationalization
+│   └── seo/         # SEO utilities
+├── pages/           # Route pages
+│   └── [locale]/    # Dynamic locale routing
+│       ├── index.astro
+│       ├── accommodations/
+│       ├── districts/
+│       └── moods/
+└── styles/          # Global styles
 ```
 
-## Available Scripts
+## 🌍 Deployment
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run codegen` - Generate TypeScript types from GraphQL
-- `npm run codegen:watch` - Watch mode for GraphQL codegen
+The site is deployed on Cloudflare Pages with server-side rendering support.
 
-## DatoCMS Integration
-
-The project uses DatoCMS for content management. GraphQL queries are defined in `src/lib/datocms/queries.graphql`.
-
-To generate TypeScript types from your GraphQL schema:
+### Quick Deploy
 ```bash
-npm run codegen
+# Login to Cloudflare
+npx wrangler login
+
+# Deploy to preview
+npm run deploy:test
+
+# Deploy to production
+npm run deploy
 ```
 
-## Deployment
+### Environment Variables in Cloudflare
+1. Go to Cloudflare Dashboard > Workers & Pages > acacia-firenze
+2. Settings > Environment variables
+3. Add `DATOCMS_API_TOKEN` for production
 
-For production deployment, you'll need to:
-1. Install an Astro adapter (e.g., `@astrojs/vercel`, `@astrojs/netlify`)
-2. Configure the adapter in `astro.config.mjs`
-3. Build the project with `npm run build`
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
 
-## Next Steps
+## 🔧 Environment Variables
 
-1. Set up content models in DatoCMS
-2. Create GraphQL queries for your content
-3. Build out the remaining pages
-4. Configure production deployment
+Required environment variables:
+- `DATOCMS_API_TOKEN` - Read-only API token from DatoCMS
+- `DATOCMS_ENVIRONMENT` - DatoCMS environment (default: main)
+
+## 📝 Documentation
+
+- [CLAUDE.md](./CLAUDE.md) - Detailed project documentation for AI assistants
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Comprehensive deployment guide
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is private and proprietary. All rights reserved.
