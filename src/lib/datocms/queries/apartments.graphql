@@ -61,9 +61,18 @@ query GetApartmentBySlug($locale: SiteLocale!, $slug: String!) {
     }
     cuddles {
       id
+      name
+      url
     }
     ups {
       id
+      name
+      url
     }
+    homeTruth {
+      id
+      body
+    }
+    cin
   }
 }

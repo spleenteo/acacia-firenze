@@ -4,6 +4,7 @@ import Navigation from '@components/Navigation.astro'
 import Footer from '@components/Footer.astro'
 import ApartmentCard from '@components/ApartmentCard.astro'
 import MoodCard from '@components/MoodCard.astro'
+import BeddyWidget from '@components/BeddyWidget.astro'
 import { getSupportedLocales } from '@lib/i18n'
 import { getHomePageOriginal, getAllApartments } from '@lib/datocms/api'
 import type { GetStaticPaths } from 'astro'
@@ -62,6 +63,12 @@ const seoMetaTags = homePage?._seoMetaTags || []
         </div>
       </div>
     </section>
+
+      <Fragment slot="body-end">
+    {homePage?.beddyId && (
+      <BeddyWidget locale={locale} beddyId={homePage.beddyId} />
+    )}
+  </Fragment>
 
     <!-- Apartments Preview -->
     {apartments.length > 0 && (
@@ -142,10 +149,5 @@ const seoMetaTags = homePage?._seoMetaTags || []
   </main>
   
   <Footer locale={locale} />
-  
-  <!-- Beddy Booking Widget -->
-  {homePage?.beddyId && (
-    <div id="beddy-bar" data-lang={locale} data-widgetcode={homePage.beddyId}></div>
-    <script defer src="https://cdn.beddy.io/bol/prod/beddybar.js?release13052020_v0"></script>
-  )}
+
 </Layout>

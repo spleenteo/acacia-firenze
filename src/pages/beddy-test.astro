@@ -1,0 +1,46 @@
+---
+// Test page for Beddy widget
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beddy Widget Test</title>
+  </head>
+  <body>
+    <h1>Beddy Widget Test Page</h1>
+    
+    <p>If the Beddy widget loads correctly, it should appear below:</p>
+    
+    <!-- Beddy Booking Widget with hardcoded test values -->
+    <div id="beddy-bar" data-lang="en" data-widgetcode="test123"></div>
+    
+    <!-- Beddy Script -->
+    <script src="https://cdn.beddy.io/bol/prod/beddybar.js?release13052020_v0"></script>
+    
+    <hr />
+    
+    <h2>Debug Info:</h2>
+    <pre id="debug"></pre>
+    
+    <script>
+      // Debug script to check if Beddy is loaded
+      window.addEventListener('load', function() {
+        const debugEl = document.getElementById('debug');
+        const beddyBar = document.getElementById('beddy-bar');
+        
+        debugEl.textContent = JSON.stringify({
+          'beddy-bar element found': !!beddyBar,
+          'beddy-bar attributes': beddyBar ? {
+            'data-lang': beddyBar.getAttribute('data-lang'),
+            'data-widgetcode': beddyBar.getAttribute('data-widgetcode')
+          } : null,
+          'window.Beddy exists': typeof window.Beddy !== 'undefined',
+          'script loaded': document.querySelector('script[src*="beddy.io"]') !== null
+        }, null, 2);
+      });
+    </script>
+  </body>
+</html>

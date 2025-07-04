@@ -49,5 +49,6 @@ const alternateLinks = generateAlternateLinks(Astro.url.pathname, ['it', 'en'])
   </head>
   <body class="min-h-screen bg-base-100">
     <slot />
+    <slot name="body-end" />
   </body>
 </html>

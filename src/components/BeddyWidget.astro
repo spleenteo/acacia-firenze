@@ -1,0 +1,18 @@
+---
+export interface Props {
+  locale: string
+  beddyId: string
+}
+
+const { locale, beddyId } = Astro.props
+---
+
+{beddyId && (
+  <>
+    <!-- Beddy Booking Widget using custom element -->
+    <beddy-bar lang={locale} widgetcode={beddyId}></beddy-bar>
+    
+    <!-- Beddy Script -->
+    <script defer src="https://cdn.beddy.io/bol/prod/beddybar.js?release13052020_v0"></script>
+  </>
+)}

@@ -2,6 +2,7 @@
 import Layout from '@layouts/Layout.astro'
 import Navigation from '@components/Navigation.astro'
 import Footer from '@components/Footer.astro'
+import BeddyWidget from '@components/BeddyWidget.astro'
 import { Icon } from 'astro-icon/components'
 import { getSupportedLocales } from '@lib/i18n'
 import { getApartmentBySlug } from '@lib/datocms/api'
@@ -96,7 +97,7 @@ const seoMetaTags = apartment._seoMetaTags || []
         </div>
       </div>
     </section>
-
+    
     <!-- Main Content -->
     <section class="py-12 lg:py-20">
       <div class="container-acacia">
@@ -259,11 +260,11 @@ const seoMetaTags = apartment._seoMetaTags || []
     </section>
   </main>
   
-  <Footer locale={locale} />
+  <Footer locale={locale} hasBottomWidget={!!apartment?.beddyId} />
   
-  <!-- Beddy Booking Widget -->
-  {apartment?.beddyId && (
-    <div id="beddy-bar" data-lang={locale} data-widgetcode={apartment.beddyId}></div>
-    <script defer src="https://cdn.beddy.io/bol/prod/beddybar.js?release13052020_v0"></script>
-  )}
+  <Fragment slot="body-end">
+    {apartment?.beddyId && (
+      <BeddyWidget locale={locale} beddyId={apartment.beddyId} />
+    )}
+  </Fragment>
 </Layout>

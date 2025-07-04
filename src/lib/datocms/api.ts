@@ -121,6 +121,7 @@ const APARTMENT_BY_SLUG_QUERY = gql`
       acaciaReward
       published
       position
+      beddyId
       boxImage {
         url
         alt
