@@ -11,11 +11,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const locales = await getSupportedLocales()
   
   // Define all possible routes
+  // Note: 'accommodations', 'districts', and 'moods' are handled by their own files
   const pages = [
-    'accommodations',
-    'districts', 
     'experiences',
-    'moods',
     'events',
     'blog',
     'guestbook',
