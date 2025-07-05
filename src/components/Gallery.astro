@@ -1,0 +1,103 @@
+---
+import { Image } from '@datocms/astro';
+
+interface GalleryImage {
+  id?: string;
+  image?: {
+    url: string;
+    alt?: string | null;
+    title?: string | null;
+    blurhash?: string | null;
+    responsiveImage?: {
+      src: string;
+      srcSet: string;
+      width: number;
+      height: number;
+      alt?: string | null;
+      title?: string | null;
+      base64?: string | null;
+      sizes: string;
+    };
+  };
+}
+
+interface Props {
+  images: GalleryImage[];
+  title?: string;
+  layout?: 'grid' | 'masonry';
+  columns?: {
+    default?: number;
+    md?: number;
+    lg?: number;
+  };
+  aspectRatio?: string;
+  showCaptions?: boolean;
+  expandFirstImage?: boolean;
+}
+
+const { 
+  images, 
+  title, 
+  layout = 'grid',
+  columns = { default: 1, md: 2, lg: 3 },
+  aspectRatio = 'aspect-[4/3]',
+  showCaptions = false,
+  expandFirstImage = false
+} = Astro.props;
+
+// Build grid classes based on columns - using full class names for Tailwind to detect them
+const getGridClasses = () => {
+  const defaultCols = columns.default === 2 ? 'grid-cols-2' : columns.default === 3 ? 'grid-cols-3' : 'grid-cols-1';
+  const mdCols = columns.md === 1 ? 'md:grid-cols-1' : columns.md === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2';
+  const lgCols = columns.lg === 1 ? 'lg:grid-cols-1' : columns.lg === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3';
+  return `grid ${defaultCols} ${mdCols} ${lgCols} gap-4`;
+};
+---
+
+{images && images.length > 0 && (
+  <div class="gallery-container">
+    {title && (
+      <h2 class="heading-2 text-acacia-primary mb-6">{title}</h2>
+    )}
+    <div class={layout === 'grid' ? getGridClasses() : 'columns-1 md:columns-2 lg:columns-3 gap-4'}>
+      {images.map((item, index) => (
+        <div class={layout === 'grid' ? `${aspectRatio} overflow-hidden rounded-lg ${expandFirstImage && index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}` : 'mb-4 break-inside-avoid'}>
+          {item.image?.responsiveImage ? (
+            <figure class="h-full">
+              <Image 
+                data={item.image.responsiveImage}
+                pictureClass="w-full h-full"
+                imgClass="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+              {showCaptions && item.image.title && (
+                <figcaption class="text-sm text-gray-600 mt-2">{item.image.title}</figcaption>
+              )}
+            </figure>
+          ) : item.image?.url ? (
+            <figure class="h-full">
+              <img 
+                src={item.image.url}
+                alt={item.image.alt || ''}
+                title={item.image.title || ''}
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+              {showCaptions && item.image.title && (
+                <figcaption class="text-sm text-gray-600 mt-2">{item.image.title}</figcaption>
+              )}
+            </figure>
+          ) : (
+            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+              <span class="text-gray-400">No image</span>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .gallery-container {
+    @apply w-full;
+  }
+</style>

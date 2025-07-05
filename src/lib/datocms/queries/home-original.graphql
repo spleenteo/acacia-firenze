@@ -1,3 +1,14 @@
+fragment ResponsiveImageFragment on ResponsiveImage {
+  src
+  srcSet
+  width
+  height
+  alt
+  title
+  base64
+  sizes
+}
+
 query GetHomePageOriginal($locale: SiteLocale!) {
   homePageOriginal(locale: $locale) {
     id
@@ -14,14 +25,9 @@ query GetHomePageOriginal($locale: SiteLocale!) {
       url
       alt
       title
-      responsiveImage {
-        src
-        width
-        height
-        alt
-        title
-        base64
-        sizes
+      blurhash
+      responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+        ...ResponsiveImageFragment
       }
     }
     ctaLink {
@@ -75,6 +81,10 @@ query GetHomePageOriginal($locale: SiteLocale!) {
       description
       image {
         url
+        blurhash
+        responsiveImage(imgixParams: { w: 1200 }) {
+          ...ResponsiveImageFragment
+        }
       }
       twitterCard
     }

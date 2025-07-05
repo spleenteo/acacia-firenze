@@ -1,9 +1,32 @@
+fragment ResponsiveImageFragment on ResponsiveImage {
+  src
+  srcSet
+  width
+  height
+  alt
+  title
+  base64
+  sizes
+}
+
 fragment DistrictBase on DistrictsRecord {
   id
   name
   slug
   description
   abstract
+  gallery {
+    id
+    image {
+      url
+      alt
+      title
+      blurhash
+      responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+        ...ResponsiveImageFragment
+      }
+    }
+  }
 }
 
 query GetAllDistricts($locale: SiteLocale!) {
@@ -20,6 +43,10 @@ query GetDistrictBySlug($locale: SiteLocale!, $slug: String!) {
       description
       image {
         url
+        blurhash
+        responsiveImage(imgixParams: { w: 1200 }) {
+          ...ResponsiveImageFragment
+        }
       }
     }
   }

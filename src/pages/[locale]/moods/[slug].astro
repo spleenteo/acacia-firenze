@@ -7,6 +7,7 @@ import DistrictCard from '@components/DistrictCard.astro'
 import { getSupportedLocales } from '@lib/i18n'
 import { getAllMoods, getMoodBySlug } from '@lib/datocms/api'
 import type { GetStaticPaths } from 'astro'
+import { Image } from '@datocms/astro'
 
 export const prerender = false
 
@@ -40,11 +41,17 @@ const districts = mood.boxes?.filter((box: any) => box.__typename === 'Districts
     <section class="relative min-h-[60vh] flex items-center">
       {mood.image && (
         <div class="absolute inset-0 z-0">
-          <img 
-            src={mood.image.url}
-            alt={mood.image.alt || mood.name}
-            class="w-full h-full object-cover"
-          />
+          {mood.image.responsiveImage ? (
+            <Image 
+              data={mood.image.responsiveImage}
+              pictureClass="w-full h-full"
+              imgClass="w-full h-full object-cover"
+            />
+          ) : (
+            <div class="w-full h-full bg-gray-600 flex items-center justify-center">
+              <span class="text-gray-400">No image</span>
+            </div>
+          )}
           <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50"></div>
         </div>
       )}

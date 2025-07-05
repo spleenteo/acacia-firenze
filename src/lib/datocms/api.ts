@@ -20,6 +20,17 @@ const HOME_PAGE_ORIGINAL_QUERY = gql`
         url
         alt
         title
+        blurhash
+        responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+          src
+          srcSet
+          width
+          height
+          alt
+          title
+          base64
+          sizes
+        }
       }
       moods {
         id
@@ -30,6 +41,17 @@ const HOME_PAGE_ORIGINAL_QUERY = gql`
           url
           alt
           title
+          blurhash
+          responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+            src
+            srcSet
+            width
+            height
+            alt
+            title
+            base64
+            sizes
+          }
         }
       }
       promo {
@@ -39,6 +61,17 @@ const HOME_PAGE_ORIGINAL_QUERY = gql`
           url
           alt
           title
+          blurhash
+          responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+            src
+            srcSet
+            width
+            height
+            alt
+            title
+            base64
+            sizes
+          }
         }
         apartment {
           id
@@ -84,11 +117,33 @@ const ALL_APARTMENTS_QUERY = gql`
         url
         alt
         title
+        blurhash
+        responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+          src
+          srcSet
+          width
+          height
+          alt
+          title
+          base64
+          sizes
+        }
       }
       featuredImage {
         url
         alt
         title
+        blurhash
+        responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+          src
+          srcSet
+          width
+          height
+          alt
+          title
+          base64
+          sizes
+        }
       }
       category {
         id
@@ -126,11 +181,33 @@ const APARTMENT_BY_SLUG_QUERY = gql`
         url
         alt
         title
+        blurhash
+        responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+          src
+          srcSet
+          width
+          height
+          alt
+          title
+          base64
+          sizes
+        }
       }
       featuredImage {
         url
         alt
         title
+        blurhash
+        responsiveImage(imgixParams: { w: 1920 }, sizes: "100vw") {
+          src
+          srcSet
+          width
+          height
+          alt
+          title
+          base64
+          sizes
+        }
       }
       category {
         id
@@ -155,6 +232,16 @@ const APARTMENT_BY_SLUG_QUERY = gql`
           url
           alt
           title
+          responsiveImage(imgixParams: { w: 1200 }, sizes: "(max-width: 768px) 100vw, 1200px") {
+            src
+            srcSet
+            width
+            height
+            alt
+            title
+            base64
+            sizes
+          }
         }
       }
       cuddles {
@@ -225,6 +312,17 @@ export async function getAllDistricts(locale: Locale) {
               url
               alt
               title
+              blurhash
+              responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+                src
+                srcSet
+                width
+                height
+                alt
+                title
+                base64
+                sizes
+              }
             }
           }
         }
@@ -251,6 +349,17 @@ export async function getDistrictBySlug(locale: Locale, slug: string) {
               url
               alt
               title
+              blurhash
+              responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+                src
+                srcSet
+                width
+                height
+                alt
+                title
+                base64
+                sizes
+              }
             }
           }
           seo {
@@ -282,6 +391,17 @@ export async function getAllMoods(locale: Locale) {
             url
             alt
             title
+            blurhash
+            responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+              src
+              srcSet
+              width
+              height
+              alt
+              title
+              base64
+              sizes
+            }
           }
         }
       }
@@ -305,6 +425,17 @@ export async function getMoodBySlug(locale: Locale, slug: string) {
             url
             alt
             title
+            blurhash
+            responsiveImage(imgixParams: { w: 1920 }, sizes: "100vw") {
+              src
+              srcSet
+              width
+              height
+              alt
+              title
+              base64
+              sizes
+            }
           }
           seo {
             title

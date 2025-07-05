@@ -12,6 +12,7 @@ Acacia Firenze showcases luxury apartments in the historic center of Florence, p
 - 🗺️ District-based exploration of Florence
 - 🎨 Mood-based thematic collections
 - 📱 Fully responsive design
+- 🖼️ Optimized responsive images with DatoCMS integration
 - ⚡ Server-side rendering with Cloudflare Pages
 - 🔍 Fuzzy search functionality
 - 🎯 SEO optimized with DatoCMS integration
@@ -28,6 +29,7 @@ Acacia Firenze showcases luxury apartments in the historic center of Florence, p
 - **Framework**: Astro 5.0 (SSR mode)
 - **Styling**: Tailwind CSS 4.0 + DaisyUI
 - **CMS**: DatoCMS (GraphQL API)
+- **Images**: @datocms/astro for responsive image optimization
 - **Icons**: Iconify (Iconoir set)
 - **Deployment**: Cloudflare Pages
 - **Type Safety**: TypeScript + GraphQL Code Generator
@@ -70,6 +72,10 @@ cp .env.example .env
 │   │   ├── DistrictCard.astro
 │   │   ├── MoodCard.astro
 │   │   ├── CardLabel.astro
+│   │   ├── Gallery.astro
+│   │   ├── ImageBlock/
+│   │   ├── ImageGalleryBlock/
+│   │   ├── ResponsiveImage/
 │   │   ├── Navigation.astro
 │   │   ├── Footer.astro
 │   │   ├── BeddyWidget.astro

@@ -7,6 +7,7 @@ Acacia Firenze is a luxury apartment rental website for Florence, Italy. The pro
 - **Framework**: Astro 5.0 (Server-side rendering mode)
 - **Styling**: Tailwind CSS (via @tailwindcss/vite)
 - **CMS**: DatoCMS (Headless CMS with GraphQL API)
+- **Images**: @datocms/astro for responsive image optimization
 - **Icons**: Iconify with astro-icon (using Iconoir icon set)
 - **Type Generation**: GraphQL Code Generator
 - **Language**: TypeScript
@@ -50,10 +51,14 @@ Acacia Firenze is a luxury apartment rental website for Florence, Italy. The pro
 - `/[locale]/moods/[slug]` - Mood pages with mixed content
 
 ### 4. Components
-- `ApartmentCard.astro` - Apartment card with DaisyUI-inspired styling
-- `MoodCard.astro` - Mood display card with overlay text
-- `DistrictCard.astro` - District display card
+- `ApartmentCard.astro` - Apartment card with responsive images
+- `MoodCard.astro` - Mood display card with overlay text and responsive images
+- `DistrictCard.astro` - District display card with responsive images
 - `CardLabel.astro` - Reusable animated icon label with hover effect
+- `Gallery.astro` - Reusable gallery component for responsive image grids
+- `ImageBlock/` - Component for DatoCMS image blocks
+- `ImageGalleryBlock/` - Component for DatoCMS image gallery blocks
+- `ResponsiveImage/` - Base responsive image component
 - `Navigation.astro` - Site navigation with language switcher
 - `Footer.astro` - Site footer (accepts `hasBottomWidget` prop for conditional padding)
 - `BeddyWidget.astro` - Reusable Beddy booking widget component
@@ -63,11 +68,22 @@ Acacia Firenze is a luxury apartment rental website for Florence, Italy. The pro
 
 ### GraphQL Queries
 Located in `/src/lib/datocms/queries/`:
-- `apartments.graphql` - Apartment queries
-- `districts.graphql` - District queries
-- `moods.graphql` - Mood queries with boxes (apartments/districts)
-- `homepage.graphql` - Homepage content
+- `apartments.graphql` - Apartment queries with responsive image fragments
+- `districts.graphql` - District queries with responsive image fragments
+- `moods.graphql` - Mood queries with boxes and responsive images
+- `homepage.graphql` - Homepage content with responsive images
 - `translations.graphql` - Translation queries for UI strings
+
+### Responsive Image Implementation
+All images from DatoCMS use the responsive image feature:
+- **Fragment**: `ResponsiveImageFragment` includes all necessary fields
+- **Component**: `Image` from `@datocms/astro` renders optimized images
+- **Features**: 
+  - Automatic srcSet generation for different viewport sizes
+  - Lazy loading with base64 placeholders
+  - Blurhash support for smooth loading transitions
+  - WebP format with fallbacks
+  - Proper sizing for hero images (1920px) vs content images (800px)
 
 ### API Functions
 In `/src/lib/datocms/api.ts`:
@@ -81,6 +97,12 @@ In `/src/lib/datocms/api.ts`:
 
 ### Type Generation
 Run `npm run codegen` to regenerate TypeScript types from DatoCMS schema.
+
+### GraphQL Utilities
+The `/src/lib/datocms/graphql.ts` file provides utilities for working with GraphQL fragments:
+- `graphql` function for query composition
+- `FragmentOf` type helper
+- `ResponsiveImageFragmentFragment` type export
 
 ## Styling System
 
@@ -231,6 +253,45 @@ Features:
 - Customizable icon and color
 - Used across all card types for consistency
 
+#### Image Components
+
+##### Gallery Component
+Reusable gallery for displaying responsive image grids:
+```astro
+<Gallery 
+  images={galleryImages}
+  title="Photo Gallery"
+  layout="grid"
+  columns={{ default: 1, md: 2, lg: 3 }}
+  aspectRatio="aspect-[4/3]"
+  showCaptions={true}
+/>
+```
+
+Features:
+- Grid or masonry layout options
+- Configurable columns for different breakpoints
+- Optional captions
+- Hover zoom effect
+- Responsive image optimization
+
+##### Responsive Images
+All images use the `Image` component from `@datocms/astro`:
+```astro
+import { Image } from '@datocms/astro'
+
+<Image 
+  data={image.responsiveImage}
+  pictureClass="w-full h-full"
+  imgClass="w-full h-full object-cover"
+/>
+```
+
+Key props:
+- `data`: ResponsiveImage data from DatoCMS
+- `pictureClass`: Classes for the `<picture>` element
+- `imgClass`: Classes for the `<img>` element
+
 ## Deployment
 
 The site is deployed on Cloudflare Pages with server-side rendering support.
@@ -257,3 +318,77 @@ The site is deployed on Cloudflare Pages with server-side rendering support.
 - `npm run deploy:test` - Deploy to preview branch
 - `npm run deploy` - Deploy to production branch
 - `npm run preview:cloudflare` - Test locally with wrangler
+
+## Responsive Images Implementation
+
+### Overview
+The project uses DatoCMS's responsive image feature with the `@datocms/astro` package to deliver optimized images across all viewports.
+
+### Key Components
+
+#### 1. Image Component Usage
+```astro
+import { Image } from '@datocms/astro'
+
+<Image 
+  data={image.responsiveImage}
+  pictureClass="w-full h-full"
+  imgClass="w-full h-full object-cover"
+/>
+```
+
+#### 2. GraphQL Fragment
+All image queries include the ResponsiveImageFragment:
+```graphql
+fragment ResponsiveImageFragment on ResponsiveImage {
+  src
+  srcSet
+  width
+  height
+  alt
+  title
+  base64
+  sizes
+  blurhash
+}
+```
+
+#### 3. Image Sizing Strategy
+- **Hero Images**: 1920px width with `sizes="100vw"`
+- **Card Images**: 400-800px width with responsive sizes
+- **Gallery Images**: 800px width with appropriate sizes attribute
+
+### Implementation Details
+
+#### Query Updates
+All GraphQL queries have been updated to include:
+1. `responsiveImage` field with appropriate imgix parameters
+2. `blurhash` field for smooth loading transitions
+3. Proper `sizes` attribute for responsive behavior
+
+Example:
+```graphql
+image {
+  url
+  alt
+  title
+  blurhash
+  responsiveImage(imgixParams: { w: 1920 }, sizes: "100vw") {
+    ...ResponsiveImageFragment
+  }
+}
+```
+
+#### Component Updates
+- **ApartmentCard**: Uses responsive images for box and featured images
+- **MoodCard**: Displays mood images with responsive optimization
+- **DistrictCard**: Shows first gallery image as responsive
+- **Gallery**: Reusable component for image grids
+- **Hero Sections**: Full-width responsive images in detail pages
+
+### Benefits
+1. **Performance**: Automatic WebP conversion and size optimization
+2. **Loading**: Base64 placeholders and blurhash for smooth transitions
+3. **Responsive**: Proper srcSet for all viewport sizes
+4. **SEO**: Maintains alt text and proper image dimensions
+5. **DX**: Simple component API with type safety

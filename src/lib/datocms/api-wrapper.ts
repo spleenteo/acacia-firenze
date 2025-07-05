@@ -28,6 +28,17 @@ export async function getAllDistrictsRuntime(locale: Locale, runtime?: any) {
             url
             alt
             title
+            blurhash
+            responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+              src
+              srcSet
+              width
+              height
+              alt
+              title
+              base64
+              sizes
+            }
           }
         }
       }
@@ -59,11 +70,33 @@ export async function getApartmentBySlugRuntime(locale: Locale, slug: string, ru
           url
           alt
           title
+          blurhash
+          responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+            src
+            srcSet
+            width
+            height
+            alt
+            title
+            base64
+            sizes
+          }
         }
         featuredImage {
           url
           alt
           title
+          blurhash
+          responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+            src
+            srcSet
+            width
+            height
+            alt
+            title
+            base64
+            sizes
+          }
         }
         category {
           id
@@ -88,6 +121,17 @@ export async function getApartmentBySlugRuntime(locale: Locale, slug: string, ru
             url
             alt
             title
+            blurhash
+            responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+              src
+              srcSet
+              width
+              height
+              alt
+              title
+              base64
+              sizes
+            }
           }
         }
         cuddles {
@@ -142,6 +186,17 @@ export async function getHomePageOriginalRuntime(locale: Locale, runtime?: any) 
             url
             alt
             title
+            blurhash
+            responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+              src
+              srcSet
+              width
+              height
+              alt
+              title
+              base64
+              sizes
+            }
           }
         }
         promo {

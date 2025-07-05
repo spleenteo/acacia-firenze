@@ -1,3 +1,14 @@
+fragment ResponsiveImageFragment on ResponsiveImage {
+  src
+  srcSet
+  width
+  height
+  alt
+  title
+  base64
+  sizes
+}
+
 fragment PostBase on PostRecord {
   id
   title
@@ -9,6 +20,10 @@ fragment PostBase on PostRecord {
     url
     alt
     title
+    blurhash
+    responsiveImage(imgixParams: { w: 1200 }, sizes: "(max-width: 768px) 100vw, 1200px") {
+      ...ResponsiveImageFragment
+    }
   }
   category {
     id
@@ -36,6 +51,10 @@ query GetPostBySlug($locale: SiteLocale!, $slug: String!) {
       description
       image {
         url
+        blurhash
+        responsiveImage(imgixParams: { w: 1200 }) {
+          ...ResponsiveImageFragment
+        }
       }
     }
   }

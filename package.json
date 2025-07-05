@@ -16,6 +16,7 @@
     "deploy": "npm run build:cloudflare && wrangler pages deploy dist --project-name=acacia-firenze && echo '\n⚠️  Note: Direct uploads create preview deployments. To promote to production:\n1. Visit https://dash.cloudflare.com/1ed0bcbfc2f1e696c278f37de34d8ef2/pages/view/acacia-firenze\n2. Find your deployment and click \"Promote to Production\"\n'"
   },
   "dependencies": {
+    "@datocms/astro": "^0.6.2",
     "@graphql-codegen/cli": "^5.0.7",
     "@graphql-codegen/typescript": "^4.1.6",
     "@graphql-codegen/typescript-graphql-request": "^6.3.0",

@@ -6,6 +6,8 @@ import BeddyWidget from '@components/BeddyWidget.astro'
 import { Icon } from 'astro-icon/components'
 import { getSupportedLocales } from '@lib/i18n'
 import { getApartmentBySlug } from '@lib/datocms/api'
+import { Image } from '@datocms/astro'
+import Gallery from '@components/Gallery.astro'
 
 export const prerender = false
 
@@ -36,11 +38,17 @@ const seoMetaTags = apartment._seoMetaTags || []
     <!-- Hero Section -->
     <section class="relative">
       <div class="aspect-[16/9] lg:aspect-[21/9] overflow-hidden">
-        <img 
-          src={apartment.featuredImage?.url}
-          alt={apartment.featuredImage?.alt || apartment.name}
-          class="w-full h-full object-cover"
-        />
+        {apartment.featuredImage?.responsiveImage ? (
+          <Image 
+            data={apartment.featuredImage.responsiveImage}
+            pictureClass="w-full h-full"
+            imgClass="w-full h-full object-cover"
+          />
+        ) : (
+          <div class="w-full h-full bg-gray-600 flex items-center justify-center">
+            <span class="text-gray-400">No image</span>
+          </div>
+        )}
       </div>
       
       <!-- Apartment Info Overlay -->
@@ -120,18 +128,11 @@ const seoMetaTags = apartment._seoMetaTags || []
             <!-- Gallery -->
             {apartment.gallery && apartment.gallery.length > 0 && (
               <div class="mb-12">
-                <h2 class="heading-2 text-acacia-primary mb-6">Gallery</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {apartment.gallery.map((image) => (
-                    <div class="aspect-[4/3] overflow-hidden rounded-lg">
-                      <img 
-                        src={image.image?.url}
-                        alt={image.image?.alt || apartment.name}
-                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <Gallery 
+                  images={apartment.gallery}
+                  title="Gallery"
+                  columns={{ default: 1, md: 2, lg: 2 }}
+                />
               </div>
             )}
 

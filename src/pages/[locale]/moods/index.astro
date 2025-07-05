@@ -1,0 +1,79 @@
+---
+import Layout from '@layouts/Layout.astro'
+import Navigation from '@components/Navigation.astro'
+import Footer from '@components/Footer.astro'
+import MoodCard from '@components/MoodCard.astro'
+import { getSupportedLocales } from '@lib/i18n'
+import { getAllMoods } from '@lib/datocms/api'
+
+export const prerender = false
+
+const { locale } = Astro.params as { locale: string }
+
+if (!locale) {
+  throw new Error('Locale parameter is required')
+}
+
+const moods = await getAllMoods(locale)
+---
+
+<Layout 
+  title={locale === 'it' ? 'Le nostre atmosfere - Acacia Firenze' : 'Our Moods - Acacia Firenze'}
+  description={locale === 'it' ? 'Scopri le diverse atmosfere di Firenze attraverso i nostri appartamenti tematici' : 'Discover the different moods of Florence through our themed apartments'}
+  locale={locale}
+>
+  <Navigation locale={locale} />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="relative py-20 bg-gradient-to-b from-acacia-secondary/10 to-white">
+      <div class="container-acacia">
+        <div class="max-w-4xl mx-auto text-center">
+          <h1 class="heading-display text-acacia-primary mb-6">
+            {locale === 'it' ? 'Le Atmosfere di Firenze' : 'The Moods of Florence'}
+          </h1>
+          <p class="text-xl text-gray-700">
+            {locale === 'it' 
+              ? 'Ogni appartamento racconta una storia diversa di Firenze. Scegli l\'atmosfera che più ti rappresenta.'
+              : 'Each apartment tells a different story of Florence. Choose the mood that best represents you.'}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Moods Grid -->
+    <section class="py-20">
+      <div class="container-acacia">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {moods.map((mood) => (
+            <MoodCard mood={mood} locale={locale} />
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container-acacia">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="heading-2 text-acacia-primary mb-6">
+            {locale === 'it' ? 'Trova il tuo appartamento ideale' : 'Find your ideal apartment'}
+          </h2>
+          <p class="text-lg text-gray-700 mb-8">
+            {locale === 'it'
+              ? 'Ogni mood rappresenta un modo diverso di vivere Firenze. Esplora le nostre collezioni e trova quella che fa per te.'
+              : 'Each mood represents a different way to experience Florence. Explore our collections and find the one that suits you.'}
+          </p>
+          <a 
+            href={`/${locale}/accommodations`}
+            class="btn-primary"
+          >
+            {locale === 'it' ? 'Vedi tutti gli appartamenti' : 'View all apartments'}
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer locale={locale} />
+</Layout>

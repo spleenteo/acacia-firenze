@@ -1,3 +1,14 @@
+fragment ResponsiveImageFragment on ResponsiveImage {
+  src
+  srcSet
+  width
+  height
+  alt
+  title
+  base64
+  sizes
+}
+
 fragment MoodBase on MoodRecord {
   id
   name
@@ -8,6 +19,10 @@ fragment MoodBase on MoodRecord {
     url
     alt
     title
+    blurhash
+    responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+      ...ResponsiveImageFragment
+    }
   }
 }
 
@@ -25,6 +40,10 @@ query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
       description
       image {
         url
+        blurhash
+        responsiveImage(imgixParams: { w: 1200 }) {
+          ...ResponsiveImageFragment
+        }
       }
     }
     boxes {
@@ -42,10 +61,18 @@ query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
         featuredImage {
           url
           alt
+          blurhash
+          responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+            ...ResponsiveImageFragment
+          }
         }
         boxImage {
           url
           alt
+          blurhash
+          responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+            ...ResponsiveImageFragment
+          }
         }
         district {
           name
@@ -62,6 +89,10 @@ query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
           image {
             url
             alt
+            blurhash
+            responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+              ...ResponsiveImageFragment
+            }
           }
         }
       }

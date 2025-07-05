@@ -2,6 +2,7 @@
 import type { ApartmentBaseFragment } from '@lib/datocms/types'
 import { t } from '@lib/i18n'
 import CardLabel from './CardLabel.astro'
+import { Image } from '@datocms/astro'
 
 export interface Props {
   apartment: ApartmentBaseFragment
@@ -9,6 +10,17 @@ export interface Props {
   customImage?: {
     url: string
     alt?: string | null
+    responsiveImage?: {
+      __typename?: 'ResponsiveImage'
+      src: string
+      srcSet: string
+      width: number
+      height: number
+      alt?: string | null
+      title?: string | null
+      base64?: string | null
+      sizes: string
+    }
   }
   customDescription?: string
 }
@@ -17,16 +29,25 @@ const { apartment, locale, customImage, customDescription } = Astro.props
 
 // Get translation using Rosetta
 const apartmentLabel = t('apartment', {}, locale)
+
+// Select the appropriate image source - prioritize custom, then featured, then box
+const imageData = customImage?.responsiveImage || apartment.featuredImage?.responsiveImage || apartment.boxImage?.responsiveImage
 ---
 
 <div class="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow overflow-hidden group">
   <a href={`/${locale}/accommodations/${apartment.slug}`} class="block">
     <div class="relative">
-      <img
-        src={customImage?.url || apartment.featuredImage?.url || apartment.boxImage?.url}
-        alt={customImage?.alt || apartment.featuredImage?.alt || apartment.name}
-        class="aspect-square w-full object-cover"
-      />
+      {imageData ? (
+        <Image
+          data={imageData}
+          pictureClass="aspect-square w-full"
+          imgClass="w-full h-full object-cover"
+        />
+      ) : (
+        <div class="aspect-square w-full bg-gray-200 flex items-center justify-center">
+          <span class="text-gray-400">No image</span>
+        </div>
+      )}
       <CardLabel 
         icon="iconoir:home-simple" 
         label={apartmentLabel} 

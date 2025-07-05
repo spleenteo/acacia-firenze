@@ -5,6 +5,7 @@ import Footer from '@components/Footer.astro'
 import { Icon } from 'astro-icon/components'
 import { getSupportedLocales } from '@lib/i18n'
 import { getAllDistricts } from '@lib/datocms/api'
+import { Image } from '@datocms/astro'
 
 export const prerender = false
 
@@ -63,11 +64,16 @@ const districts = await getAllDistricts(locale)
             >
               {district.gallery && district.gallery.length > 0 && district.gallery[0].image && (
                 <div class="aspect-[4/3] overflow-hidden">
-                  <img 
-                    src={district.gallery[0].image.url}
-                    alt={district.gallery[0].image.alt || district.name}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  {district.gallery[0].image.responsiveImage ? (
+                    <Image 
+                      data={district.gallery[0].image.responsiveImage}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span class="text-gray-400">No image</span>
+                    </div>
+                  )}
                 </div>
               )}
               <div class="p-8">

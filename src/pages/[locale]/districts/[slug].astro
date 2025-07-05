@@ -7,6 +7,7 @@ import { Icon } from 'astro-icon/components'
 import { getSupportedLocales } from '@lib/i18n'
 import { getAllDistricts, getDistrictBySlug, getAllApartments } from '@lib/datocms/api'
 import type { GetStaticPaths } from 'astro'
+import Gallery from '@components/Gallery.astro'
 
 export const prerender = true
 
@@ -82,17 +83,10 @@ const otherDistricts = allDistricts.filter(d => d.slug !== slug).slice(0, 5)
     {district.gallery && district.gallery.length > 0 && (
       <section class="py-12 bg-white">
         <div class="container-acacia">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {district.gallery.map((item, index) => (
-              <div class={`aspect-[4/3] overflow-hidden rounded-lg ${index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}`}>
-                <img 
-                  src={item.image?.url}
-                  alt={item.image?.alt || district.name}
-                  class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            ))}
-          </div>
+          <Gallery 
+            images={district.gallery}
+            expandFirstImage={true}
+          />
         </div>
       </section>
     )}

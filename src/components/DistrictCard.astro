@@ -2,6 +2,7 @@
 import type { DistrictsRecord } from '@lib/datocms/types'
 import { t } from '@lib/i18n'
 import CardLabel from './CardLabel.astro'
+import { Image } from '@datocms/astro'
 
 export interface Props {
   district: DistrictsRecord
@@ -19,11 +20,17 @@ const districtLabel = t('district', {}, locale)
   <a href={`/${locale}/districts/${district.slug}`} class="block h-full">
   {firstImage && (
     <div class="aspect-[4/3] overflow-hidden relative">
-      <img 
-        src={firstImage.url}
-        alt={firstImage.alt || district.name}
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-      />
+      {firstImage.responsiveImage ? (
+        <Image 
+          data={firstImage.responsiveImage}
+          pictureClass="w-full h-full"
+          imgClass="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+      ) : (
+        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+          <span class="text-gray-400">No image</span>
+        </div>
+      )}
       <CardLabel 
         icon="iconoir:pin-alt" 
         label={districtLabel} 

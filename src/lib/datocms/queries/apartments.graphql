@@ -1,3 +1,14 @@
+fragment ResponsiveImageFragment on ResponsiveImage {
+  src
+  srcSet
+  width
+  height
+  alt
+  title
+  base64
+  sizes
+}
+
 fragment ApartmentBase on ApartmentRecord {
   id
   name
@@ -17,11 +28,19 @@ fragment ApartmentBase on ApartmentRecord {
     url
     alt
     title
+    blurhash
+    responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+      ...ResponsiveImageFragment
+    }
   }
   featuredImage {
     url
     alt
     title
+    blurhash
+    responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+      ...ResponsiveImageFragment
+    }
   }
   category {
     id
@@ -49,6 +68,10 @@ query GetApartmentBySlug($locale: SiteLocale!, $slug: String!) {
       description
       image {
         url
+        blurhash
+        responsiveImage(imgixParams: { w: 1200 }) {
+          ...ResponsiveImageFragment
+        }
       }
     }
     gallery {
@@ -57,6 +80,10 @@ query GetApartmentBySlug($locale: SiteLocale!, $slug: String!) {
         url
         alt
         title
+        blurhash
+        responsiveImage(imgixParams: { w: 1200 }, sizes: "(max-width: 768px) 100vw, 1200px") {
+          ...ResponsiveImageFragment
+        }
       }
     }
     cuddles {
