@@ -17,8 +17,11 @@ Acacia Firenze is a luxury apartment rental website for Florence, Italy. The pro
 - `/src/pages/[locale]/` - Localized pages (supports Italian and English)
 - `/src/components/` - Reusable Astro components
 - `/src/lib/datocms/` - DatoCMS integration (API, queries, types)
+- `/src/lib/i18n/` - Internationalization with Rosetta
 - `/src/layouts/` - Page layouts
 - `/src/styles/` - Global styles and Tailwind configuration
+- `/scripts/` - Build and utility scripts
+- `/docs/` - Documentation files
 
 ### Important Files
 - `astro.config.mjs` - Astro configuration
@@ -47,12 +50,14 @@ Acacia Firenze is a luxury apartment rental website for Florence, Italy. The pro
 - `/[locale]/moods/[slug]` - Mood pages with mixed content
 
 ### 4. Components
-- `ApartmentCard.astro` - Reusable apartment card with category labels
-- `MoodCard.astro` - Mood display card
+- `ApartmentCard.astro` - Apartment card with DaisyUI-inspired styling
+- `MoodCard.astro` - Mood display card with overlay text
 - `DistrictCard.astro` - District display card
-- `Navigation.astro` - Site navigation
+- `CardLabel.astro` - Reusable animated icon label with hover effect
+- `Navigation.astro` - Site navigation with language switcher
 - `Footer.astro` - Site footer (accepts `hasBottomWidget` prop for conditional padding)
 - `BeddyWidget.astro` - Reusable Beddy booking widget component
+- `TranslationsProvider.astro` - Loads translations for current locale
 
 ## DatoCMS Integration
 
@@ -62,6 +67,7 @@ Located in `/src/lib/datocms/queries/`:
 - `districts.graphql` - District queries
 - `moods.graphql` - Mood queries with boxes (apartments/districts)
 - `homepage.graphql` - Homepage content
+- `translations.graphql` - Translation queries for UI strings
 
 ### API Functions
 In `/src/lib/datocms/api.ts`:
@@ -99,14 +105,17 @@ Run `npm run codegen` to regenerate TypeScript types from DatoCMS schema.
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (fetches translations automatically)
 npm run dev
 
-# Build for production
+# Build for production (fetches translations automatically)
 npm run build
 
 # Regenerate types from DatoCMS
 npm run codegen
+
+# Fetch translations from DatoCMS
+npm run translations:fetch
 
 # Run linting
 npm run lint
@@ -167,6 +176,60 @@ The site integrates with Beddy.io for online booking functionality:
 ```astro
 <BeddyWidget locale={locale} beddyId={apartment.beddyId} />
 ```
+
+## Internationalization (i18n)
+
+### Rosetta Integration
+The project uses Rosetta for lightweight internationalization:
+
+- **Translation Management**: Translations are stored in DatoCMS and fetched at build time
+- **Auto-fetch**: Translations are automatically fetched before `dev` and `build` commands
+- **Storage**: Translations are saved as JSON files in `/src/lib/i18n/translations/`
+- **Usage**: Use the `t()` function from `@lib/i18n` to get translations
+
+#### Translation Usage
+```astro
+import { t } from '@lib/i18n'
+
+// Simple translation
+const label = t('apartment', {}, locale)
+
+// Nested translation
+const navLabel = t('nav.accommodations', {}, locale)
+
+// Translation with parameters
+const message = t('welcome_message', { name: 'John' }, locale)
+```
+
+#### DatoCMS Translation Model
+Create Translation records in DatoCMS with:
+- `key`: The translation key (e.g., 'apartment', 'mood', 'district')
+- `value`: The translated text for each locale
+
+### Component Styling
+
+#### Card Components
+All card components use a consistent design system:
+- White background with rounded corners
+- Shadow effect with hover animation
+- Category/type badges
+- Responsive grid layout
+
+#### CardLabel Component
+Reusable animated label for card type indicators:
+```astro
+<CardLabel 
+  icon="iconoir:home-simple" 
+  label="Apartment" 
+  iconColor="text-acacia-secondary" 
+/>
+```
+
+Features:
+- Circular icon badge that expands on hover
+- Smooth slide animation revealing label text
+- Customizable icon and color
+- Used across all card types for consistency
 
 ## Deployment
 

@@ -1,4 +1,7 @@
 {
+  "apartment": "Apartment",
+  "mood": "Mood",
+  "district": "District",
   "nav": {
     "accommodations": "Accommodations",
     "districts": "Districts",

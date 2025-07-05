@@ -68,14 +68,33 @@ export async function getPreferredLocale(request: Request, cookies: AstroCookies
 // Translation system
 const i18n = rosetta()
 
+// Store for loaded translations
+const loadedTranslations: Record<string, boolean> = {}
+
 export function loadTranslations(locale: Locale, translations: Record<string, any>) {
-  i18n.locale(locale)
   i18n.set(locale, translations)
+  loadedTranslations[locale] = true
+}
+
+export function setLocale(locale: Locale) {
+  i18n.locale(locale)
 }
 
 export function t(key: string, params?: Record<string, any>, locale?: Locale): string {
   if (locale) i18n.locale(locale)
-  return i18n.t(key, params)
+  return i18n.t(key, params) || key // Fallback to key if translation not found
+}
+
+// Load translations from JSON files
+export async function loadTranslationsFromFile(locale: Locale) {
+  if (loadedTranslations[locale]) return
+  
+  try {
+    const translations = await import(`./translations/${locale}.json`)
+    loadTranslations(locale, translations.default)
+  } catch (error) {
+    console.warn(`Failed to load translations for locale ${locale}`)
+  }
 }
 
 export async function getLocalizedPath(path: string, locale: Locale): Promise<string> {

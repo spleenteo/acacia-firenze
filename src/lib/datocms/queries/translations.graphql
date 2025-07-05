@@ -1,0 +1,6 @@
+query GetTranslations($locale: SiteLocale!, $keys: [String!]) {
+  allTranslations(locale: $locale, filter: { key: { in: $keys } }) {
+    key
+    value
+  }
+}

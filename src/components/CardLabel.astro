@@ -1,0 +1,22 @@
+---
+import { Icon } from 'astro-icon/components'
+
+export interface Props {
+  icon: string
+  label: string
+  iconColor?: string
+}
+
+const { icon, label, iconColor = 'text-acacia-primary' } = Astro.props
+---
+
+<div class="absolute top-3 left-3">
+  <div class="flex items-center bg-white/90 backdrop-blur-sm rounded-full overflow-hidden transition-all duration-300 ease-out">
+    <div class="p-2 flex items-center justify-center">
+      <Icon name={icon} class={`w-5 h-5 ${iconColor}`} />
+    </div>
+    <span class="text-xs font-medium text-acacia-primary max-w-0 opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:pr-3 transition-all duration-300 ease-out whitespace-nowrap overflow-hidden">
+      {label}
+    </span>
+  </div>
+</div>

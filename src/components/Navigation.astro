@@ -1,7 +1,5 @@
 ---
 import { t, getLocalizedPathSync, getSupportedLocales, type Locale } from '@lib/i18n'
-import itTranslations from '@lib/i18n/translations/it.json'
-import enTranslations from '@lib/i18n/translations/en.json'
 
 export interface Props {
   locale: Locale
@@ -14,9 +12,6 @@ if (!locale) {
   console.error('Navigation component called without locale prop')
   throw new Error('Navigation component requires a locale prop')
 }
-
-// Load translations - default to English if locale not found
-const translations = locale === 'it' ? itTranslations : enTranslations
 
 // Get available locales from DatoCMS
 const availableLocales = await getSupportedLocales()
@@ -50,7 +45,7 @@ const navItems = [
               href={getLocalizedPathSync(item.href, locale)} 
               class="text-sm uppercase tracking-wider text-acacia-gray hover:text-acacia-primary transition-colors"
             >
-              {translations.nav[item.key as keyof typeof translations.nav]}
+              {t(`nav.${item.key}`, {}, locale)}
             </a>
           </li>
         ))}
@@ -98,7 +93,7 @@ const navItems = [
             href={getLocalizedPathSync(item.href, locale)}
             class="block text-sm uppercase tracking-wider text-acacia-gray hover:text-acacia-primary transition-colors"
           >
-            {translations.nav[item.key as keyof typeof translations.nav]}
+            {t(`nav.${item.key}`, {}, locale)}
           </a>
         </li>
       ))}

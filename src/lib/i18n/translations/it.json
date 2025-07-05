@@ -1,4 +1,7 @@
 {
+  "apartment": "Appartamento",
+  "mood": "Atmosfera",
+  "district": "Quartiere",
   "nav": {
     "accommodations": "Alloggi",
     "districts": "Quartieri",

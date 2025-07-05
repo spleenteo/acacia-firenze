@@ -3,6 +3,7 @@ import { ViewTransitions } from 'astro:transitions'
 import type { Locale } from '../lib/i18n'
 import { generateMetaTags, generateAlternateLinks } from '../lib/seo'
 import { getSupportedLocales } from '../lib/i18n'
+import TranslationsProvider from '@components/TranslationsProvider.astro'
 import '../app.css'
 
 export interface Props {
@@ -48,6 +49,7 @@ const alternateLinks = generateAlternateLinks(Astro.url.pathname, ['it', 'en'])
     <ViewTransitions />
   </head>
   <body class="min-h-screen bg-base-100">
+    <TranslationsProvider locale={locale} />
     <slot />
     <slot name="body-end" />
   </body>

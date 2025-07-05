@@ -392,3 +392,27 @@ export async function getNavigationData(locale: Locale) {
   // TODO: Implementare
   return {}
 }
+
+export async function getTranslations(locale: Locale, keys: string[]) {
+  const data = await datocmsRequest<any>(
+    gql`
+      query GetTranslations($locale: SiteLocale!, $keys: [String!]) {
+        allTranslations(locale: $locale, filter: { key: { in: $keys } }) {
+          key
+          value
+        }
+      }
+    `,
+    { locale, keys }
+  )
+  
+  // Convert array to key-value object for easier access
+  const translations: Record<string, string> = {}
+  data.allTranslations?.forEach((t: any) => {
+    if (t.key && t.value) {
+      translations[t.key] = t.value
+    }
+  })
+  
+  return translations
+}

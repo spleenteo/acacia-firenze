@@ -1,0 +1,17 @@
+---
+import { loadTranslationsFromFile, setLocale } from '@lib/i18n'
+
+export interface Props {
+  locale: string
+}
+
+const { locale } = Astro.props
+
+// Load translations for the current locale
+await loadTranslationsFromFile(locale)
+
+// Set the current locale
+setLocale(locale)
+---
+
+<!-- This component doesn't render anything, it just loads translations -->

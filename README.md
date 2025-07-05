@@ -63,26 +63,34 @@ cp .env.example .env
 ## 📁 Project Structure
 
 ```
-src/
-├── components/        # Reusable Astro components
-│   ├── ApartmentCard.astro
-│   ├── DistrictCard.astro
-│   ├── MoodCard.astro
-│   ├── Navigation.astro
-│   ├── Footer.astro
-│   └── BeddyWidget.astro
-├── layouts/          # Page layouts
-├── lib/
-│   ├── datocms/     # DatoCMS integration & queries
-│   ├── i18n/        # Internationalization
-│   └── seo/         # SEO utilities
-├── pages/           # Route pages
-│   └── [locale]/    # Dynamic locale routing
-│       ├── index.astro
-│       ├── accommodations/
-│       ├── districts/
-│       └── moods/
-└── styles/          # Global styles
+.
+├── src/
+│   ├── components/        # Reusable Astro components
+│   │   ├── ApartmentCard.astro
+│   │   ├── DistrictCard.astro
+│   │   ├── MoodCard.astro
+│   │   ├── CardLabel.astro
+│   │   ├── Navigation.astro
+│   │   ├── Footer.astro
+│   │   ├── BeddyWidget.astro
+│   │   └── TranslationsProvider.astro
+│   ├── layouts/          # Page layouts
+│   ├── lib/
+│   │   ├── datocms/     # DatoCMS integration & queries
+│   │   ├── i18n/        # Internationalization with Rosetta
+│   │   └── seo/         # SEO utilities
+│   ├── pages/           # Route pages
+│   │   └── [locale]/    # Dynamic locale routing
+│   │       ├── index.astro
+│   │       ├── accommodations/
+│   │       ├── districts/
+│   │       └── moods/
+│   └── styles/          # Global styles
+├── scripts/             # Build scripts
+│   └── fetch-translations.mjs
+└── docs/               # Documentation
+    ├── CLAUDE.md       # Detailed project documentation
+    └── DEPLOYMENT.md   # Deployment guide
 ```
 
 ## 🌍 Deployment

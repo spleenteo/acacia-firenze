@@ -1,5 +1,7 @@
 ---
 import type { MoodBaseFragment } from '@lib/datocms/types'
+import { t } from '@lib/i18n'
+import CardLabel from './CardLabel.astro'
 
 export interface Props {
   mood: MoodBaseFragment
@@ -7,25 +9,41 @@ export interface Props {
 }
 
 const { mood, locale } = Astro.props
+
+// Get translation using Rosetta
+const moodLabel = t('mood', {}, locale)
 ---
 
-<a 
-  href={`/${locale}/moods/${mood.slug}`}
-  class="group cursor-pointer block"
->
-  <div class="relative aspect-[4/3] overflow-hidden rounded-lg">
-    <img 
-      src={mood.image?.url}
-      alt={mood.image?.alt || mood.name}
-      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-    />
-    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-      <div>
+<div class="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow overflow-hidden group">
+  <a href={`/${locale}/moods/${mood.slug}`} class="block">
+    <div class="relative">
+      <img
+        src={mood.image?.url}
+        alt={mood.image?.alt || mood.name}
+        class="aspect-[4/3] w-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+      <CardLabel 
+        icon="iconoir:heart" 
+        label={moodLabel} 
+        iconColor="text-acacia-secondary" 
+      />
+      <div class="absolute bottom-0 left-0 right-0 p-6">
         <h3 class="text-white text-2xl font-semibold mb-2">{mood.name}</h3>
         {mood.claim && (
-          <p class="text-white/90 text-sm">{mood.claim}</p>
+          <p class="text-white/90">{mood.claim}</p>
         )}
       </div>
     </div>
-  </div>
-</a>
+    <div class="p-6">
+      <p class="text-gray-600">
+        {mood.description || `Discover the ${mood.name} mood in Florence`}
+      </p>
+      <div class="mt-4">
+        <span class="inline-block bg-acacia-primary text-white text-xs font-medium px-3 py-1 rounded-full">
+          Explore Mood →
+        </span>
+      </div>
+    </div>
+  </a>
+</div>

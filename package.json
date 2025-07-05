@@ -3,13 +3,14 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "npm run translations:fetch && astro dev",
+    "build": "npm run translations:fetch && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "codegen": "graphql-codegen --config .graphqlrc.ts",
     "codegen:watch": "graphql-codegen --config .graphqlrc.ts --watch",
-    "build:cloudflare": "astro build",
+    "translations:fetch": "node scripts/fetch-translations.mjs",
+    "build:cloudflare": "npm run translations:fetch && astro build",
     "preview:cloudflare": "wrangler pages dev dist",
     "deploy:preview": "npm run build:cloudflare && wrangler pages deploy dist --project-name=acacia-firenze --branch=preview",
     "deploy": "npm run build:cloudflare && wrangler pages deploy dist --project-name=acacia-firenze && echo '\n⚠️  Note: Direct uploads create preview deployments. To promote to production:\n1. Visit https://dash.cloudflare.com/1ed0bcbfc2f1e696c278f37de34d8ef2/pages/view/acacia-firenze\n2. Find your deployment and click \"Promote to Production\"\n'"
