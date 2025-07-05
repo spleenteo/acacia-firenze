@@ -29,7 +29,7 @@ export async function getAllDistrictsRuntime(locale: Locale, runtime?: any) {
             alt
             title
             blurhash
-            responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+            responsiveImage(imgixParams: { w: 800, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 800px") {
               src
               srcSet
               width
@@ -71,7 +71,7 @@ export async function getApartmentBySlugRuntime(locale: Locale, slug: string, ru
           alt
           title
           blurhash
-          responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+          responsiveImage(imgixParams: { w: 400, crop: focalpoint }, sizes: "400px") {
             src
             srcSet
             width
@@ -87,7 +87,7 @@ export async function getApartmentBySlugRuntime(locale: Locale, slug: string, ru
           alt
           title
           blurhash
-          responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+          responsiveImage(imgixParams: { w: 800, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 800px") {
             src
             srcSet
             width
@@ -122,7 +122,7 @@ export async function getApartmentBySlugRuntime(locale: Locale, slug: string, ru
             alt
             title
             blurhash
-            responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+            responsiveImage(imgixParams: { w: 800, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 800px") {
               src
               srcSet
               width
@@ -187,7 +187,7 @@ export async function getHomePageOriginalRuntime(locale: Locale, runtime?: any) 
             alt
             title
             blurhash
-            responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+            responsiveImage(imgixParams: { w: 800, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 800px") {
               src
               srcSet
               width

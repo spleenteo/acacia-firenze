@@ -29,7 +29,7 @@ fragment ApartmentBase on ApartmentRecord {
     alt
     title
     blurhash
-    responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+    responsiveImage(imgixParams: { w: 400, h: 300, auto: format, crop: focalpoint, fit: fill }, sizes: "400px") {
       ...ResponsiveImageFragment
     }
   }
@@ -38,7 +38,7 @@ fragment ApartmentBase on ApartmentRecord {
     alt
     title
     blurhash
-    responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+    responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 800px") {
       ...ResponsiveImageFragment
     }
   }
@@ -69,7 +69,7 @@ query GetApartmentBySlug($locale: SiteLocale!, $slug: String!) {
       image {
         url
         blurhash
-        responsiveImage(imgixParams: { w: 1200 }) {
+        responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }) {
           ...ResponsiveImageFragment
         }
       }
@@ -81,7 +81,7 @@ query GetApartmentBySlug($locale: SiteLocale!, $slug: String!) {
         alt
         title
         blurhash
-        responsiveImage(imgixParams: { w: 1200 }, sizes: "(max-width: 768px) 100vw, 1200px") {
+        responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 1200px") {
           ...ResponsiveImageFragment
         }
       }

@@ -21,7 +21,7 @@ const HOME_PAGE_ORIGINAL_QUERY = gql`
         alt
         title
         blurhash
-        responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+        responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 800px") {
           src
           srcSet
           width
@@ -42,7 +42,7 @@ const HOME_PAGE_ORIGINAL_QUERY = gql`
           alt
           title
           blurhash
-          responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+          responsiveImage(imgixParams: { w: 600, h: 400, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 600px") {
             src
             srcSet
             width
@@ -62,7 +62,7 @@ const HOME_PAGE_ORIGINAL_QUERY = gql`
           alt
           title
           blurhash
-          responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+          responsiveImage(imgixParams: { w: 600, h: 400, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 600px") {
             src
             srcSet
             width
@@ -118,7 +118,7 @@ const ALL_APARTMENTS_QUERY = gql`
         alt
         title
         blurhash
-        responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+        responsiveImage(imgixParams: { w: 400, h: 300, auto: format, crop: focalpoint, fit: fill }, sizes: "400px") {
           src
           srcSet
           width
@@ -134,7 +134,7 @@ const ALL_APARTMENTS_QUERY = gql`
         alt
         title
         blurhash
-        responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+        responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 800px") {
           src
           srcSet
           width
@@ -182,7 +182,7 @@ const APARTMENT_BY_SLUG_QUERY = gql`
         alt
         title
         blurhash
-        responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+        responsiveImage(imgixParams: { w: 400, h: 300, auto: format, crop: focalpoint, fit: fill }, sizes: "400px") {
           src
           srcSet
           width
@@ -198,7 +198,7 @@ const APARTMENT_BY_SLUG_QUERY = gql`
         alt
         title
         blurhash
-        responsiveImage(imgixParams: { w: 1920 }, sizes: "100vw") {
+        responsiveImage(imgixParams: { w: 1920, auto: format, crop: focalpoint }, sizes: "100vw") {
           src
           srcSet
           width
@@ -232,7 +232,7 @@ const APARTMENT_BY_SLUG_QUERY = gql`
           url
           alt
           title
-          responsiveImage(imgixParams: { w: 1200 }, sizes: "(max-width: 768px) 100vw, 1200px") {
+          responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 1200px") {
             src
             srcSet
             width
@@ -313,7 +313,7 @@ export async function getAllDistricts(locale: Locale) {
               alt
               title
               blurhash
-              responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+              responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 800px") {
                 src
                 srcSet
                 width
@@ -350,7 +350,7 @@ export async function getDistrictBySlug(locale: Locale, slug: string) {
               alt
               title
               blurhash
-              responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+              responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 800px") {
                 src
                 srcSet
                 width
@@ -392,7 +392,7 @@ export async function getAllMoods(locale: Locale) {
             alt
             title
             blurhash
-            responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+            responsiveImage(imgixParams: { w: 600, h: 400, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 600px") {
               src
               srcSet
               width
@@ -426,7 +426,7 @@ export async function getMoodBySlug(locale: Locale, slug: string) {
             alt
             title
             blurhash
-            responsiveImage(imgixParams: { w: 1920 }, sizes: "100vw") {
+            responsiveImage(imgixParams: { w: 1920, auto: format, crop: focalpoint }, sizes: "100vw") {
               src
               srcSet
               width

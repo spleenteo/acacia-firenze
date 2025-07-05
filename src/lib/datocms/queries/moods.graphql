@@ -20,7 +20,7 @@ fragment MoodBase on MoodRecord {
     alt
     title
     blurhash
-    responsiveImage(imgixParams: { w: 600 }, sizes: "(max-width: 768px) 100vw, 600px") {
+    responsiveImage(imgixParams: { w: 600, h: 400, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 600px") {
       ...ResponsiveImageFragment
     }
   }
@@ -41,7 +41,7 @@ query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
       image {
         url
         blurhash
-        responsiveImage(imgixParams: { w: 1200 }) {
+        responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }) {
           ...ResponsiveImageFragment
         }
       }
@@ -62,7 +62,7 @@ query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
           url
           alt
           blurhash
-          responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+          responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 800px") {
             ...ResponsiveImageFragment
           }
         }
@@ -70,7 +70,7 @@ query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
           url
           alt
           blurhash
-          responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+          responsiveImage(imgixParams: { w: 400, h: 300, auto: format, crop: focalpoint, fit: fill }, sizes: "400px") {
             ...ResponsiveImageFragment
           }
         }
@@ -90,7 +90,7 @@ query GetMoodBySlug($locale: SiteLocale!, $slug: String!) {
             url
             alt
             blurhash
-            responsiveImage(imgixParams: { w: 400 }, sizes: "400px") {
+            responsiveImage(imgixParams: { w: 400, h: 300, auto: format, crop: focalpoint, fit: fill }, sizes: "400px") {
               ...ResponsiveImageFragment
             }
           }

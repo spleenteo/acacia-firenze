@@ -22,7 +22,7 @@ fragment DistrictBase on DistrictsRecord {
       alt
       title
       blurhash
-      responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+      responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 800px") {
         ...ResponsiveImageFragment
       }
     }
@@ -44,7 +44,7 @@ query GetDistrictBySlug($locale: SiteLocale!, $slug: String!) {
       image {
         url
         blurhash
-        responsiveImage(imgixParams: { w: 1200 }) {
+        responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }) {
           ...ResponsiveImageFragment
         }
       }

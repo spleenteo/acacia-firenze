@@ -21,7 +21,7 @@ fragment PostBase on PostRecord {
     alt
     title
     blurhash
-    responsiveImage(imgixParams: { w: 1200 }, sizes: "(max-width: 768px) 100vw, 1200px") {
+    responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 1200px") {
       ...ResponsiveImageFragment
     }
   }
@@ -52,7 +52,7 @@ query GetPostBySlug($locale: SiteLocale!, $slug: String!) {
       image {
         url
         blurhash
-        responsiveImage(imgixParams: { w: 1200 }) {
+        responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }) {
           ...ResponsiveImageFragment
         }
       }

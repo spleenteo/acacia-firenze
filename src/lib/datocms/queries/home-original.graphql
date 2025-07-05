@@ -26,7 +26,7 @@ query GetHomePageOriginal($locale: SiteLocale!) {
       alt
       title
       blurhash
-      responsiveImage(imgixParams: { w: 800 }, sizes: "(max-width: 768px) 100vw, 800px") {
+      responsiveImage(imgixParams: { w: 800, h: 600, auto: format, crop: focalpoint }, sizes: "(max-width: 768px) 100vw, 800px") {
         ...ResponsiveImageFragment
       }
     }
@@ -42,8 +42,9 @@ query GetHomePageOriginal($locale: SiteLocale!) {
         url
         alt
         title
-        responsiveImage {
+        responsiveImage(imgixParams: { w: 600, h: 400, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 600px") {
           src
+          srcSet
           width
           height
           alt
@@ -60,8 +61,9 @@ query GetHomePageOriginal($locale: SiteLocale!) {
         url
         alt
         title
-        responsiveImage {
+        responsiveImage(imgixParams: { w: 600, h: 400, auto: format, crop: focalpoint, fit: fill }, sizes: "(max-width: 768px) 100vw, 600px") {
           src
+          srcSet
           width
           height
           alt
@@ -82,7 +84,7 @@ query GetHomePageOriginal($locale: SiteLocale!) {
       image {
         url
         blurhash
-        responsiveImage(imgixParams: { w: 1200 }) {
+        responsiveImage(imgixParams: { w: 1200, auto: format, crop: focalpoint }) {
           ...ResponsiveImageFragment
         }
       }
